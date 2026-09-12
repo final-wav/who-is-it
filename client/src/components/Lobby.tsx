@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Deck, SanitizedRoomState } from '../../../worker/types';
 import { getAllAvailableDecks } from '../utils/decks';
-import { Copy, Check, Play, User } from 'lucide-react';
+import { Copy, Check, Play, User, Swords } from 'lucide-react';
 
 interface LobbyProps {
   roomState: SanitizedRoomState | null;
@@ -44,27 +44,28 @@ export const Lobby: React.FC<LobbyProps> = ({
 
   return (
     <div className="w-full max-w-xl mx-auto flex flex-col gap-3 p-2 sm:p-4 font-display">
-      {/* Box Header: Classic MB "WER IST ES?" */}
-      <div className="bg-slate-900 border-4 border-slate-800 rounded-3xl p-5 text-center shadow-tray-3d">
-        <div className="inline-block transform -rotate-1 hover:rotate-0 transition">
-          <span className="text-4xl sm:text-5xl font-black text-white tracking-tight uppercase">
-            <span className="bg-red-600 text-white px-3 py-1 rounded-xl shadow-md mr-1 border-2 border-red-700">
-              WER
-            </span>
-            <span className="text-amber-400 mx-1">IST</span>
-            <span className="bg-blue-600 text-white px-3 py-1 rounded-xl shadow-md ml-1 border-2 border-blue-700">
-              ES?
-            </span>
+      {/* Modern Red/Blue Split Duel Header */}
+      <div className="relative bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 text-center shadow-2xl overflow-hidden backdrop-blur-md">
+        {/* Subtle dynamic background glow from Red to Blue */}
+        <div className="absolute -top-16 -left-16 w-48 h-48 bg-red-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-16 -right-16 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-500 to-blue-500 filter drop-shadow-sm">
+            Wer ist es?
           </span>
-        </div>
+        </h1>
+        <p className="text-xs font-bold text-stone-400 mt-1 font-sans">
+          Das moderne 1v1 Echtzeit-Duell
+        </p>
 
         {/* Room Code Badge */}
-        <div className="mt-4 flex items-center justify-center gap-3 bg-slate-950 p-2.5 rounded-2xl border-2 border-slate-800 max-w-sm mx-auto">
-          <span className="text-xs font-bold text-stone-400">RAUM-CODE:</span>
+        <div className="mt-4 flex items-center justify-center gap-3 bg-slate-950/80 p-2.5 rounded-2xl border border-slate-800 max-w-sm mx-auto shadow-inner">
+          <span className="text-xs font-bold text-stone-400">RAUM:</span>
           <span className="text-2xl font-black text-amber-400 tracking-widest">{roomId}</span>
           <button
             onClick={handleCopyLink}
-            className="btn-board px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 border border-slate-700"
+            className="btn-board px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 border border-slate-700 transition"
           >
             {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-amber-400" />}
             {copied ? 'Kopiert' : 'Link'}
@@ -72,33 +73,33 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* The Two Plastic Trays: Red (Player 1) vs Blue (Player 2) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Red Tray */}
-        <div className="bg-red-600 border-4 border-red-800 rounded-2xl p-3.5 text-white shadow-tray-3d flex items-center justify-between">
+      {/* Modern 1v1 Arena: Red Player vs Blue Player */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
+        {/* Slot 1: Red Player */}
+        <div className="bg-gradient-to-br from-red-600 via-red-700 to-rose-800 border-2 border-red-500/40 rounded-2xl p-4 text-white shadow-lg shadow-red-950/40 flex items-center justify-between">
           <div>
-            <span className="text-xs font-black uppercase tracking-wider block text-red-200">
+            <span className="text-[11px] font-black uppercase tracking-wider block text-red-200 font-sans">
               Rotes Brett (Host)
             </span>
             <span className="text-lg font-black truncate block max-w-[150px]">
               {p1?.name || playerName || 'Host'}
             </span>
           </div>
-          <span className="bg-red-800/80 px-2.5 py-1 rounded-lg text-xs font-black">
+          <span className="bg-black/30 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-black border border-white/10">
             Bereit
           </span>
         </div>
 
-        {/* Blue Tray */}
+        {/* Slot 2: Blue Player */}
         <div
-          className={`border-4 rounded-2xl p-3.5 transition shadow-tray-3d flex items-center justify-between ${
+          className={`rounded-2xl p-4 transition flex items-center justify-between border-2 ${
             p2?.connected
-              ? 'bg-blue-600 border-blue-800 text-white'
+              ? 'bg-gradient-to-br from-blue-600 via-blue-700 to-sky-800 border-blue-500/40 text-white shadow-lg shadow-blue-950/40'
               : 'bg-slate-900 border-slate-800 text-stone-400 border-dashed'
           }`}
         >
           <div>
-            <span className="text-xs font-black uppercase tracking-wider block text-blue-200">
+            <span className="text-[11px] font-black uppercase tracking-wider block text-blue-200 font-sans">
               Blaues Brett (Gast)
             </span>
             <span className="text-lg font-black truncate block max-w-[150px] text-white">
@@ -106,8 +107,8 @@ export const Lobby: React.FC<LobbyProps> = ({
             </span>
           </div>
           <span
-            className={`px-2.5 py-1 rounded-lg text-xs font-black ${
-              p2?.connected ? 'bg-blue-800/80 text-white' : 'bg-slate-800 text-stone-500'
+            className={`px-3 py-1 rounded-full text-xs font-black ${
+              p2?.connected ? 'bg-black/30 text-white border border-white/10' : 'bg-slate-800 text-stone-500'
             }`}
           >
             {p2?.connected ? 'Bereit' : 'Offen'}
@@ -115,20 +116,20 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Deck Selector in Yellow Tile Look */}
-      <div className="bg-slate-900 border-4 border-slate-800 rounded-2xl p-4 shadow-md">
-        <span className="text-xs font-black text-amber-400 uppercase tracking-wider block mb-2">
+      {/* Modern Deck Selector */}
+      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl">
+        <span className="text-xs font-black text-stone-300 uppercase tracking-wider block mb-2 font-sans">
           Kartenpaket wählen
         </span>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {availableDecks.map((deck) => (
             <button
               key={deck.id}
               onClick={() => setSelectedDeckId(deck.id)}
               className={`btn-board p-3 rounded-xl border-2 text-center transition ${
                 selectedDeckId === deck.id
-                  ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow-tile-3d -translate-y-0.5'
+                  ? 'bg-gradient-to-b from-amber-300 to-amber-400 border-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/20 -translate-y-0.5'
                   : 'bg-slate-950 border-slate-800 text-stone-300 hover:border-slate-700'
               }`}
             >
@@ -139,18 +140,18 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Start Button: Big green 3D button */}
+      {/* Start Button: Vibrant Red-to-Blue Duel Gradient Button */}
       <button
         onClick={handleStart}
         disabled={!bothConnected}
-        className={`btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider shadow-btn-green transition flex items-center justify-center gap-2 ${
+        className={`btn-board w-full py-4 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 ${
           bothConnected
-            ? 'bg-green-600 hover:bg-green-500 text-white'
-            : 'bg-slate-800 text-stone-500 cursor-not-allowed border border-slate-700 shadow-none'
+            ? 'bg-gradient-to-r from-red-600 via-rose-600 to-blue-600 hover:from-red-500 hover:via-rose-500 hover:to-blue-500 text-white shadow-xl shadow-red-600/20 transform hover:scale-[1.01]'
+            : 'bg-slate-800 text-stone-500 cursor-not-allowed border border-slate-700'
         }`}
       >
-        <Play className="w-5 h-5 fill-current" />
-        {bothConnected ? 'Spiel starten' : 'Warte auf Mitspieler...'}
+        <Swords className="w-5 h-5" />
+        {bothConnected ? 'Duell starten' : 'Warte auf Mitspieler...'}
       </button>
     </div>
   );

@@ -34,22 +34,22 @@ export const Board: React.FC<BoardProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col items-center">
-      {/* The Physical Molded Plastic Tray */}
+    <div className="w-full flex flex-col items-center font-display">
+      {/* The Modern Molded Stadium Tray with Rich Red/Blue Gradients */}
       <div
-        className={`w-full max-w-5xl rounded-3xl border-4 p-3 sm:p-4 shadow-tray-3d transition-colors ${
+        className={`w-full max-w-5xl rounded-3xl p-3 sm:p-4 transition-all duration-300 shadow-2xl border-2 ${
           isRedTray
-            ? 'bg-red-600 border-red-800 ring-4 ring-red-900/30'
-            : 'bg-blue-600 border-blue-800 ring-4 ring-blue-900/30'
+            ? 'bg-gradient-to-b from-red-600 via-red-700 to-rose-950 border-red-500/40 shadow-red-950/60'
+            : 'bg-gradient-to-b from-blue-600 via-blue-700 to-indigo-950 border-blue-500/40 shadow-blue-950/60'
         }`}
       >
-        {/* Tray Header Lip */}
-        <div className="flex items-center justify-between pb-2 mb-2 border-b-2 border-black/20 text-white font-display">
-          <div className="flex items-center gap-2.5">
-            <span className="font-black text-lg sm:text-xl tracking-tight text-stroke">
-              {isRedTray ? 'ROTES SPIELBRETT' : 'BLAUES SPIELBRETT'}
+        {/* Tray Header Bar */}
+        <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-white/15 text-white">
+          <div className="flex items-center gap-3">
+            <span className="font-black text-lg sm:text-xl tracking-wide uppercase drop-shadow-sm">
+              {isRedTray ? 'Rotes Spielbrett' : 'Blaues Spielbrett'}
             </span>
-            <span className="bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-xs font-black">
+            <span className="bg-black/30 backdrop-blur-xs px-3 py-0.5 rounded-full text-xs font-black border border-white/10">
               {activeCount} / {characters.length} stehen
             </span>
           </div>
@@ -57,7 +57,7 @@ export const Board: React.FC<BoardProps> = ({
           {eliminatedIds.length > 0 && (
             <button
               onClick={handleResetAll}
-              className="btn-board px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold flex items-center gap-1.5 transition text-white shadow-sm"
+              className="btn-board px-3 py-1 bg-black/25 hover:bg-black/40 rounded-xl text-xs font-bold flex items-center gap-1.5 transition text-white border border-white/10"
             >
               <RotateCcw className="w-3.5 h-3.5" /> Alle aufstellen
             </button>
@@ -66,23 +66,23 @@ export const Board: React.FC<BoardProps> = ({
 
         {/* Elimination Prompt Bar */}
         {phase === 'ELIMINATION_TIME' && isMyTurn && (
-          <div className="mb-3 p-2.5 bg-amber-300 text-slate-950 rounded-xl shadow-md border-2 border-amber-500 flex items-center justify-between gap-2">
-            <span className="font-display font-black text-sm sm:text-base">
+          <div className="mb-3 p-3 bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 rounded-2xl shadow-lg flex items-center justify-between gap-2 animate-in fade-in duration-150">
+            <span className="font-black text-sm sm:text-base">
               Antwort erhalten: Karten umklappen!
             </span>
             <button
               onClick={onEndElimination}
-              className="btn-board px-4 py-1.5 bg-green-600 hover:bg-green-500 text-white font-display font-black rounded-lg shadow-btn-green text-xs uppercase tracking-wider flex items-center gap-1"
+              className="btn-board px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black rounded-xl shadow-md text-xs uppercase tracking-wider flex items-center gap-1.5"
             >
-              <Check className="w-4 h-4" /> Fertig
+              <Check className="w-4 h-4 stroke-[3]" /> Zug beenden
             </button>
           </div>
         )}
 
-        {/* 24 Yellow Tiles in Molded Inset Tray */}
+        {/* Inset Molded 4x6 Grid with 24 Vibrant Yellow Flip Tiles */}
         <div
-          className={`perspective-board grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-2.5 p-2.5 sm:p-3.5 rounded-2xl ${
-            isRedTray ? 'bg-red-700/80 shadow-inner' : 'bg-blue-700/80 shadow-inner'
+          className={`perspective-board grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3 p-2.5 sm:p-3.5 rounded-2xl ${
+            isRedTray ? 'bg-red-950/70 shadow-inner' : 'bg-blue-950/70 shadow-inner'
           }`}
         >
           {characters.map((char) => {

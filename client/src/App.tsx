@@ -10,7 +10,7 @@ import { GuessModal } from './components/GuessModal';
 import { GameOverModal } from './components/GameOverModal';
 import { GameHistory } from './components/GameHistory';
 import { AdminDeckEditor } from './components/AdminDeckEditor';
-import { Character, Deck } from '../../worker/types';
+import { Character } from '../../worker/types';
 import { getBackendBaseUrl } from './utils/api';
 import {
   Volume2,
@@ -19,6 +19,7 @@ import {
   Target,
   LogOut,
   Play,
+  ArrowRight,
 } from 'lucide-react';
 
 export function App() {
@@ -160,24 +161,23 @@ export function App() {
   const opponent = state?.players.find((p) => p.id !== playerId);
   const mySlot = state?.mySlot || 1;
 
-  // 1. WELCOME SCREEN: Authentic Red & Blue MB Toy Box Look
+  // 1. WELCOME SCREEN: Modern Red/Blue Gaming Aesthetic
   if (!roomId) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-3 bg-slate-950 font-display">
-        <div className="w-full max-w-sm bg-slate-900 border-4 border-slate-800 rounded-3xl p-6 shadow-tray-3d text-center">
-          {/* Authentic Toy Logo */}
-          <div className="mb-4">
-            <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight uppercase">
-              <span className="bg-red-600 text-white px-2.5 py-1 rounded-xl shadow border-2 border-red-700 inline-block transform -rotate-2 mr-1">
-                WER
-              </span>
-              <span className="text-amber-400 mx-1">IST</span>
-              <span className="bg-blue-600 text-white px-2.5 py-1 rounded-xl shadow border-2 border-blue-700 inline-block transform rotate-2 ml-1">
-                ES?
+      <div className="min-h-screen flex flex-col items-center justify-center p-3 bg-slate-950 font-display relative overflow-hidden">
+        {/* Dynamic ambient duel lights */}
+        <div className="absolute -top-32 -left-32 w-80 h-80 bg-red-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-sm bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl text-center backdrop-blur-md relative z-10">
+          <div className="mb-5">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-500 to-blue-500">
+                Wer ist es?
               </span>
             </h1>
-            <p className="text-xs font-bold text-stone-400 mt-2">
-              Das originale 1v1 Rate-Duell
+            <p className="text-xs font-bold text-stone-400 mt-1 font-sans">
+              Das klassische 1v1 Duell — Rot gegen Blau
             </p>
           </div>
 
@@ -186,8 +186,8 @@ export function App() {
               type="text"
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Dein Spielername..."
-              className="w-full px-3.5 py-2.5 bg-slate-950 border-2 border-slate-700 rounded-xl text-white font-bold text-sm focus:outline-none focus:border-amber-400"
+              placeholder="Spielername..."
+              className="w-full px-3.5 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-white font-bold text-sm focus:outline-none focus:border-rose-500 transition"
               maxLength={20}
             />
           </div>
@@ -195,7 +195,7 @@ export function App() {
           {/* Red Create Room Button */}
           <button
             onClick={handleCreateRoom}
-            className="btn-board w-full py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-btn-red transition mb-3 text-sm uppercase tracking-wider flex items-center justify-center gap-1.5"
+            className="btn-board w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black rounded-xl shadow-lg shadow-red-600/25 transition mb-3 text-sm uppercase tracking-wider flex items-center justify-center gap-2"
           >
             <Play className="w-4 h-4 fill-current" /> Raum erstellen
           </button>
@@ -207,15 +207,15 @@ export function App() {
               value={joinInputCode}
               onChange={(e) => setJoinInputCode(e.target.value.toUpperCase())}
               placeholder="RAUM-CODE"
-              className="flex-1 px-3 py-2.5 bg-slate-950 border-2 border-slate-700 rounded-xl text-white font-black tracking-widest text-center uppercase text-sm focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-white font-black tracking-widest text-center uppercase text-sm focus:outline-none focus:border-blue-500"
               maxLength={6}
             />
             <button
               type="submit"
               disabled={!joinInputCode.trim()}
-              className="btn-board px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-black rounded-xl uppercase text-xs shadow-btn-blue"
+              className="btn-board px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-blue-600/25 flex items-center gap-1"
             >
-              Beitreten
+              Beitreten <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>
         </div>
@@ -227,7 +227,7 @@ export function App() {
   if (state?.phase === 'LOBBY') {
     return (
       <div className="min-h-screen flex flex-col bg-slate-950 font-display">
-        <header className="px-4 py-2.5 bg-slate-900 border-b-2 border-slate-800 flex items-center justify-between text-white">
+        <header className="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-white">
           <span className="font-black text-base uppercase">
             <span className="text-red-500">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-500">es?</span>
           </span>
@@ -235,14 +235,14 @@ export function App() {
           <div className="flex items-center gap-1">
             <button
               onClick={toggleMute}
-              className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-slate-800"
+              className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
               title="Ton"
             >
               {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
             </button>
             <button
               onClick={handleLeaveRoom}
-              className="p-1.5 text-stone-400 hover:text-red-400 rounded-lg hover:bg-slate-800"
+              className="p-1.5 text-stone-400 hover:text-red-400 rounded-lg hover:bg-slate-800 transition"
               title="Verlassen"
             >
               <LogOut className="w-4 h-4" />
@@ -266,9 +266,9 @@ export function App() {
   // 3. IN-GAME BOARD VIEW
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-stone-100 font-display">
-      {/* Game Header */}
-      <header className="sticky top-0 z-30 px-3 sm:px-6 py-2 bg-slate-900 border-b-2 border-slate-800 flex items-center justify-between gap-2 shadow-sm">
-        <div className="flex items-center gap-2">
+      {/* Game Header with Modern Red/Blue Matchup Indicator */}
+      <header className="sticky top-0 z-30 px-3 sm:px-6 py-2 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 flex items-center justify-between gap-2 shadow-md">
+        <div className="flex items-center gap-2.5">
           <span className="font-black text-sm sm:text-base uppercase">
             <span className="text-red-500">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-500">es?</span>
           </span>
@@ -282,11 +282,11 @@ export function App() {
 
         <div>
           {isMyTurn ? (
-            <span className="px-3 py-1 bg-green-600 text-white font-black text-xs uppercase tracking-wider rounded-lg shadow-btn-green animate-pulse">
+            <span className="px-3 py-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 animate-pulse">
               DU BIST AM ZUG
             </span>
           ) : (
-            <span className="px-3 py-1 bg-slate-800 text-stone-300 font-bold text-xs rounded-lg">
+            <span className="px-3 py-1 bg-slate-800 text-stone-300 font-bold text-xs rounded-xl border border-slate-700">
               {opponent?.name || 'Gegner'} am Zug...
             </span>
           )}
@@ -295,14 +295,14 @@ export function App() {
         <div className="flex items-center gap-1">
           <button
             onClick={toggleMute}
-            className="p-1.5 text-stone-400 hover:text-white rounded hover:bg-slate-800"
+            className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
             title="Ton"
           >
             {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
           </button>
           <button
             onClick={handleLeaveRoom}
-            className="p-1.5 text-stone-400 hover:text-red-400 rounded hover:bg-slate-800"
+            className="p-1.5 text-stone-400 hover:text-red-400 rounded-lg hover:bg-slate-800 transition"
             title="Verlassen"
           >
             <LogOut className="w-4 h-4" />
@@ -314,8 +314,8 @@ export function App() {
       <main className="flex-1 w-full max-w-5xl mx-auto p-2 sm:p-3 flex flex-col gap-2 pb-24">
         {/* Turn Action Bar */}
         {isMyTurn && state?.phase === 'QUESTION_TIME' && (
-          <div className="w-full flex items-center justify-between p-2 bg-slate-900 border-2 border-slate-800 rounded-xl gap-2">
-            <span className="text-xs font-bold text-stone-300">
+          <div className="w-full flex items-center justify-between p-2 bg-slate-900 border border-slate-800 rounded-2xl gap-2 shadow-lg">
+            <span className="text-xs font-bold text-stone-300 font-sans">
               Aktion wählen:
             </span>
 
@@ -326,8 +326,10 @@ export function App() {
                   setIsGuessMode(false);
                   setIsQuestionOpen((prev) => !prev);
                 }}
-                className={`btn-board px-3.5 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider flex items-center gap-1 ${
-                  isQuestionOpen ? 'bg-amber-400 text-slate-950 shadow-btn-yellow' : 'bg-green-600 text-white shadow-btn-green'
+                className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
+                  isQuestionOpen
+                    ? 'bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20'
+                    : 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-lg shadow-green-600/20'
                 }`}
               >
                 <HelpCircle className="w-4 h-4" /> Frage stellen
@@ -339,8 +341,10 @@ export function App() {
                   setIsQuestionOpen(false);
                   setIsGuessMode((prev) => !prev);
                 }}
-                className={`btn-board px-3.5 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider flex items-center gap-1 ${
-                  isGuessMode ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-btn-red' : 'bg-slate-800 text-red-400 border border-red-900/60'
+                className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
+                  isGuessMode
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white ring-2 ring-red-400 shadow-lg shadow-red-600/30'
+                    : 'bg-slate-800 text-red-400 border border-red-500/40'
                 }`}
               >
                 <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Lösen (Wer ist es?)'}
@@ -376,7 +380,7 @@ export function App() {
           />
         )}
 
-        {/* The 24-Tile Plastic Tray (Red for Slot 1, Blue for Slot 2) */}
+        {/* The 24-Tile Modern Molded Stadium Tray (Red for Slot 1, Blue for Slot 2) */}
         {state && (
           <Board
             characters={state.selectedDeck.characters}
@@ -403,7 +407,7 @@ export function App() {
       </main>
 
       {/* Docked Secret Card Bar at Bottom */}
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900 border-t-2 border-slate-800 p-2">
+      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-2 shadow-2xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
           <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
 
