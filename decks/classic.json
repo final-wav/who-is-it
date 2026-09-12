@@ -1,0 +1,355 @@
+{
+  "id": "classic",
+  "name": "Klassisch (24 Personen)",
+  "description": "Das originale Wer-ist-es?-Erlebnis mit 24 einzigartigen Gesichtern",
+  "characters": [
+    {
+      "id": "char_1",
+      "name": "Alex",
+      "image": "",
+      "avatarSeed": "alex",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "black",
+        "facialHair": "mustache",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_2",
+      "name": "Alfred",
+      "image": "",
+      "avatarSeed": "alfred",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "red",
+        "facialHair": "mustache",
+        "glasses": true,
+        "hat": false,
+        "eyeColor": "blue"
+      }
+    },
+    {
+      "id": "char_3",
+      "name": "Anita",
+      "image": "",
+      "avatarSeed": "anita",
+      "attributes": {
+        "gender": "female",
+        "hairColor": "blonde",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "blue"
+      }
+    },
+    {
+      "id": "char_4",
+      "name": "Anne",
+      "image": "",
+      "avatarSeed": "anne",
+      "attributes": {
+        "gender": "female",
+        "hairColor": "black",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_5",
+      "name": "Bernard",
+      "image": "",
+      "avatarSeed": "bernard",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "brown",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": true,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_6",
+      "name": "Bill",
+      "image": "",
+      "avatarSeed": "bill",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "red",
+        "facialHair": "beard",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_7",
+      "name": "Charles",
+      "image": "",
+      "avatarSeed": "charles",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "blonde",
+        "facialHair": "mustache",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_8",
+      "name": "Claire",
+      "image": "",
+      "avatarSeed": "claire",
+      "attributes": {
+        "gender": "female",
+        "hairColor": "red",
+        "facialHair": "none",
+        "glasses": true,
+        "hat": true,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_9",
+      "name": "David",
+      "image": "",
+      "avatarSeed": "david",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "blonde",
+        "facialHair": "beard",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_10",
+      "name": "Eric",
+      "image": "",
+      "avatarSeed": "eric",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "blonde",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": true,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_11",
+      "name": "Frans",
+      "image": "",
+      "avatarSeed": "frans",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "red",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_12",
+      "name": "George",
+      "image": "",
+      "avatarSeed": "george",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "white",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": true,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_13",
+      "name": "Herman",
+      "image": "",
+      "avatarSeed": "herman",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "red",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_14",
+      "name": "Joe",
+      "image": "",
+      "avatarSeed": "joe",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "blonde",
+        "facialHair": "none",
+        "glasses": true,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_15",
+      "name": "Maria",
+      "image": "",
+      "avatarSeed": "maria",
+      "attributes": {
+        "gender": "female",
+        "hairColor": "brown",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": true,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_16",
+      "name": "Max",
+      "image": "",
+      "avatarSeed": "max",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "brown",
+        "facialHair": "mustache",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_17",
+      "name": "Paul",
+      "image": "",
+      "avatarSeed": "paul",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "white",
+        "facialHair": "none",
+        "glasses": true,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_18",
+      "name": "Peter",
+      "image": "",
+      "avatarSeed": "peter",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "white",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "blue"
+      }
+    },
+    {
+      "id": "char_19",
+      "name": "Philip",
+      "image": "",
+      "avatarSeed": "philip",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "black",
+        "facialHair": "beard",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_20",
+      "name": "Richard",
+      "image": "",
+      "avatarSeed": "richard",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "brown",
+        "facialHair": "beard",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_21",
+      "name": "Robert",
+      "image": "",
+      "avatarSeed": "robert",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "brown",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "blue"
+      }
+    },
+    {
+      "id": "char_22",
+      "name": "Sam",
+      "image": "",
+      "avatarSeed": "sam",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "white",
+        "facialHair": "none",
+        "glasses": true,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_23",
+      "name": "Susan",
+      "image": "",
+      "avatarSeed": "susan",
+      "attributes": {
+        "gender": "female",
+        "hairColor": "white",
+        "facialHair": "none",
+        "glasses": false,
+        "hat": false,
+        "eyeColor": "brown"
+      }
+    },
+    {
+      "id": "char_24",
+      "name": "Tom",
+      "image": "",
+      "avatarSeed": "tom",
+      "attributes": {
+        "gender": "male",
+        "hairColor": "black",
+        "facialHair": "none",
+        "glasses": true,
+        "hat": false,
+        "eyeColor": "blue"
+      }
+    }
+  ],
+  "commonQuestions": [
+    { "text": "Ist die Person weiblich?", "key": "gender", "val": "female" },
+    { "text": "Ist die Person männlich?", "key": "gender", "val": "male" },
+    { "text": "Hat deine Person eine Brille?", "key": "glasses", "val": true },
+    { "text": "Trägt die Person eine Kopfbedeckung / Hut?", "key": "hat", "val": true },
+    { "text": "Hat die Person Bart oder Schnurrbart?", "key": "facialHair", "hasAny": true },
+    { "text": "Hat die Person blonde Haare?", "key": "hairColor", "val": "blonde" },
+    { "text": "Hat die Person rote Haare?", "key": "hairColor", "val": "red" },
+    { "text": "Hat die Person schwarze Haare?", "key": "hairColor", "val": "black" },
+    { "text": "Hat die Person weiße / graue Haare?", "key": "hairColor", "val": "white" },
+    { "text": "Hat die Person blaue Augen?", "key": "eyeColor", "val": "blue" }
+  ]
+}

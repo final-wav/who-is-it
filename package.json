@@ -1,0 +1,36 @@
+{
+  "name": "who-is-it",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Echtzeit-Multiplayer Wer-ist-es? (Guess Who?) auf Cloudflare Workers + Durable Objects + React",
+  "type": "module",
+  "scripts": {
+    "dev:client": "vite",
+    "dev:worker": "wrangler dev",
+    "dev": "wrangler dev",
+    "build:client": "vite build",
+    "build": "npm run build:client",
+    "deploy": "npm run build:client && wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "lucide-react": "^1.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22.13.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vite": "^6.2.0",
+    "wrangler": "^3.111.0"
+  }
+}

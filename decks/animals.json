@@ -1,0 +1,39 @@
+{
+  "id": "animals",
+  "name": "Tiere (24 Tiere)",
+  "description": "Finde das geheime Tier deines Gegners!",
+  "characters": [
+    { "id": "an_1", "name": "Löwe", "image": "", "avatarSeed": "lion", "attributes": { "category": "mammal", "habitat": "land", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_2", "name": "Tiger", "image": "", "avatarSeed": "tiger", "attributes": { "category": "mammal", "habitat": "land", "carnivore": true, "wings": false, "stripes": true } },
+    { "id": "an_3", "name": "Elefant", "image": "", "avatarSeed": "elephant", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_4", "name": "Giraffe", "image": "", "avatarSeed": "giraffe", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_5", "name": "Zebra", "image": "", "avatarSeed": "zebra", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": true } },
+    { "id": "an_6", "name": "Panda", "image": "", "avatarSeed": "panda", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_7", "name": "Känguru", "image": "", "avatarSeed": "kangaroo", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_8", "name": "Koala", "image": "", "avatarSeed": "koala", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_9", "name": "Adler", "image": "", "avatarSeed": "eagle", "attributes": { "category": "bird", "habitat": "air", "carnivore": true, "wings": true, "stripes": false } },
+    { "id": "an_10", "name": "Pinguin", "image": "", "avatarSeed": "penguin", "attributes": { "category": "bird", "habitat": "water", "carnivore": true, "wings": true, "stripes": false } },
+    { "id": "an_11", "name": "Flamingo", "image": "", "avatarSeed": "flamingo", "attributes": { "category": "bird", "habitat": "water", "carnivore": false, "wings": true, "stripes": false } },
+    { "id": "an_12", "name": "Papagei", "image": "", "avatarSeed": "parrot", "attributes": { "category": "bird", "habitat": "air", "carnivore": false, "wings": true, "stripes": false } },
+    { "id": "an_13", "name": "Delfin", "image": "", "avatarSeed": "dolphin", "attributes": { "category": "mammal", "habitat": "water", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_14", "name": "Hai", "image": "", "avatarSeed": "shark", "attributes": { "category": "fish", "habitat": "water", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_15", "name": "Wal", "image": "", "avatarSeed": "whale", "attributes": { "category": "mammal", "habitat": "water", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_16", "name": "Schildkröte", "image": "", "avatarSeed": "turtle", "attributes": { "category": "reptile", "habitat": "water", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_17", "name": "Krokodil", "image": "", "avatarSeed": "crocodile", "attributes": { "category": "reptile", "habitat": "water", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_18", "name": "Frosch", "image": "", "avatarSeed": "frog", "attributes": { "category": "amphibian", "habitat": "water", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_19", "name": "Wolf", "image": "", "avatarSeed": "wolf", "attributes": { "category": "mammal", "habitat": "land", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_20", "name": "Fuchs", "image": "", "avatarSeed": "fox", "attributes": { "category": "mammal", "habitat": "land", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_21", "name": "Bär", "image": "", "avatarSeed": "bear", "attributes": { "category": "mammal", "habitat": "land", "carnivore": true, "wings": false, "stripes": false } },
+    { "id": "an_22", "name": "Hase", "image": "", "avatarSeed": "rabbit", "attributes": { "category": "mammal", "habitat": "land", "carnivore": false, "wings": false, "stripes": false } },
+    { "id": "an_23", "name": "Eule", "image": "", "avatarSeed": "owl", "attributes": { "category": "bird", "habitat": "air", "carnivore": true, "wings": true, "stripes": false } },
+    { "id": "an_24", "name": "Schmetterling", "image": "", "avatarSeed": "butterfly", "attributes": { "category": "insect", "habitat": "air", "carnivore": false, "wings": true, "stripes": false } }
+  ],
+  "commonQuestions": [
+    { "text": "Kann das Tier fliegen oder hat es Flügel?", "key": "wings", "val": true },
+    { "text": "Lebt das Tier hauptsächlich im oder am Wasser?", "key": "habitat", "val": "water" },
+    { "text": "Ist das Tier ein Fleischfresser?", "key": "carnivore", "val": true },
+    { "text": "Ist es ein Säugetier?", "key": "category", "val": "mammal" },
+    { "text": "Ist es ein Vogel?", "key": "category", "val": "bird" },
+    { "text": "Hat das Tier Streifen?", "key": "stripes", "val": true }
+  ]
+}

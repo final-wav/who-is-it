@@ -1,0 +1,5 @@
+node_modules
+.wrangler
+client/dist
+.DS_Store
+Thumbs.db
