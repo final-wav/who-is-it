@@ -4,6 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   root: './client',
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {

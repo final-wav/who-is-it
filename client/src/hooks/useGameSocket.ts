@@ -7,6 +7,8 @@ import {
   ServerMessage,
 } from '../../../worker/types';
 
+import { getBackendWsUrl } from '../utils/api';
+
 interface UseGameSocketProps {
   roomId: string | null;
   playerName: string;
@@ -49,10 +51,7 @@ export function useGameSocket({ roomId, playerName }: UseGameSocketProps) {
       socketRef.current = null;
     }
 
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/ws?roomId=${encodeURIComponent(roomId)}`;
-
+    const wsUrl = getBackendWsUrl(roomId);
     const ws = new WebSocket(wsUrl);
     socketRef.current = ws;
 

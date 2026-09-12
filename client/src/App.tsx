@@ -11,6 +11,7 @@ import { GameOverModal } from './components/GameOverModal';
 import { GameHistory } from './components/GameHistory';
 import { DeckCreatorModal } from './components/DeckCreatorModal';
 import { Character, Deck } from '../../worker/types';
+import { getBackendBaseUrl } from './utils/api';
 import {
   Volume2,
   VolumeX,
@@ -144,7 +145,8 @@ export function App() {
   const handleCreateRoom = async () => {
     playSound('click');
     try {
-      const res = await fetch('/api/room/create');
+      const baseUrl = getBackendBaseUrl();
+      const res = await fetch(`${baseUrl}/api/room/create`);
       if (res.ok) {
         const data = await res.json() as { roomId: string };
         setRoomId(data.roomId);
