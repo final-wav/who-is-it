@@ -21,18 +21,14 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({ character, cla
   const attrs = character.attributes || {};
   const seed = (character.avatarSeed || character.name || '').toLowerCase();
 
-  // Animal deck handling
+  // Animal deck handling - clean SVG silhouette without emojis
   if (attrs.category || ['lion', 'tiger', 'elephant', 'giraffe', 'zebra', 'panda', 'kangaroo', 'koala', 'eagle', 'penguin', 'flamingo', 'parrot', 'dolphin', 'shark', 'whale', 'turtle', 'crocodile', 'frog', 'wolf', 'fox', 'bear', 'rabbit', 'owl', 'butterfly'].includes(seed)) {
-    const animalEmojis: Record<string, string> = {
-      lion: '🦁', tiger: '🐯', elephant: '🐘', giraffe: '🦒', zebra: '🦓',
-      panda: '🐼', kangaroo: '🦘', koala: '🐨', eagle: '🦅', penguin: '🐧',
-      flamingo: '🦩', parrot: '🦜', dolphin: '🐬', shark: '🦈', whale: '🐋',
-      turtle: '🐢', crocodile: '🐊', frog: '🐸', wolf: '🐺', fox: '🦊',
-      bear: '🐻', rabbit: '🐰', owl: '🦉', butterfly: '🦋',
-    };
     return (
-      <div className={`${className} bg-[#dbeafe] flex items-center justify-center select-none`}>
-        <span className="text-4xl filter drop-shadow">{animalEmojis[seed] || '🐾'}</span>
+      <div className={`${className} bg-sky-100 flex flex-col items-center justify-center select-none text-sky-800 p-2`}>
+        <svg viewBox="0 0 24 24" className="w-12 h-12 fill-current stroke-none opacity-80" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="9" />
+        </svg>
+        <span className="text-[10px] font-black uppercase tracking-wider mt-1">{character.name}</span>
       </div>
     );
   }

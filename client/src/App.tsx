@@ -156,38 +156,44 @@ export function App() {
     window.history.replaceState({}, '', window.location.pathname);
   };
 
+  const handleQuickPlay = () => {
+    playSound('click');
+    const code = 'SOLO';
+    setRoomId(code);
+    window.history.replaceState({}, '', `?room=${code}`);
+  };
+
   const isMyTurn = state?.currentTurnPlayerId === playerId;
   const isAnswerTimeForMe = state?.phase === 'ANSWER_TIME' && state?.currentQuestion?.askerPlayerId !== playerId;
   const opponent = state?.players.find((p) => p.id !== playerId);
   const mySlot = state?.mySlot || 1;
 
-  // 1. WELCOME SCREEN: Modern Red/Blue Gaming Aesthetic
+  // 1. WELCOME SCREEN: Helle, freundliche Spieltisch-Optik in Rot & Blau
   if (!roomId) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-3 bg-slate-950 font-display relative overflow-hidden">
-        {/* Dynamic ambient duel lights */}
-        <div className="absolute -top-32 -left-32 w-80 h-80 bg-red-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="w-full max-w-sm bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl text-center backdrop-blur-md relative z-10">
+      <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 bg-amber-50/40 font-display relative select-none">
+        <div className="w-full max-w-sm bg-white border-2 border-stone-200 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
           <div className="mb-5">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-500 to-blue-500">
-                Wer ist es?
-              </span>
+              <span className="text-red-600">Wer </span>
+              <span className="text-stone-400">ist </span>
+              <span className="text-blue-600">es?</span>
             </h1>
-            <p className="text-xs font-bold text-stone-400 mt-1 font-sans">
+            <p className="text-xs font-bold text-stone-500 mt-1 font-sans">
               Das klassische 1v1 Duell — Rot gegen Blau
             </p>
           </div>
 
-          <div className="text-left mb-3">
+          <div className="text-left mb-3.5">
+            <label className="text-[11px] font-black text-stone-600 uppercase tracking-wider block mb-1">
+              Dein Spielername
+            </label>
             <input
               type="text"
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               placeholder="Spielername..."
-              className="w-full px-3.5 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-white font-bold text-sm focus:outline-none focus:border-rose-500 transition"
+              className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none focus:border-red-500 transition"
               maxLength={20}
             />
           </div>
@@ -195,29 +201,39 @@ export function App() {
           {/* Red Create Room Button */}
           <button
             onClick={handleCreateRoom}
-            className="btn-board w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-black rounded-xl shadow-lg shadow-red-600/25 transition mb-3 text-sm uppercase tracking-wider flex items-center justify-center gap-2"
+            className="btn-board w-full py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-md text-sm uppercase tracking-wider flex items-center justify-center gap-2 mb-3"
           >
-            <Play className="w-4 h-4 fill-current" /> Raum erstellen
+            <Play className="w-4 h-4 fill-current" /> Neues Spiel erstellen (Rot)
           </button>
 
           {/* Blue Join Form */}
-          <form onSubmit={handleJoinRoom} className="flex gap-2">
+          <form onSubmit={handleJoinRoom} className="flex gap-2 mb-4">
             <input
               type="text"
               value={joinInputCode}
               onChange={(e) => setJoinInputCode(e.target.value.toUpperCase())}
               placeholder="RAUM-CODE"
-              className="flex-1 px-3 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-white font-black tracking-widest text-center uppercase text-sm focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-sm focus:outline-none focus:border-blue-500"
               maxLength={6}
             />
             <button
               type="submit"
               disabled={!joinInputCode.trim()}
-              className="btn-board px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:opacity-40 text-white font-black rounded-xl uppercase text-xs shadow-lg shadow-blue-600/25 flex items-center gap-1"
+              className="btn-board px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-black rounded-xl uppercase text-xs shadow-md flex items-center gap-1"
             >
-              Beitreten <ArrowRight className="w-3.5 h-3.5" />
+              Beitreten (Blau) <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </form>
+
+          {/* Quick Play Solo Button */}
+          <div className="pt-3 border-t border-stone-200">
+            <button
+              onClick={handleQuickPlay}
+              className="btn-board w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs"
+            >
+              Sofort ausprobieren (Solo-Brett)
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -226,23 +242,23 @@ export function App() {
   // 2. LOBBY VIEW
   if (state?.phase === 'LOBBY') {
     return (
-      <div className="min-h-screen flex flex-col bg-slate-950 font-display">
-        <header className="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-white">
+      <div className="min-h-screen flex flex-col bg-amber-50/40 font-display">
+        <header className="px-4 py-2.5 bg-white border-b-2 border-stone-200 flex items-center justify-between text-slate-900 shadow-xs">
           <span className="font-black text-base uppercase">
-            <span className="text-red-500">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-500">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
 
           <div className="flex items-center gap-1">
             <button
               onClick={toggleMute}
-              className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
+              className="p-1.5 text-stone-500 hover:text-slate-900 rounded-lg hover:bg-stone-100 transition"
               title="Ton"
             >
-              {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+              {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-600" />}
             </button>
             <button
               onClick={handleLeaveRoom}
-              className="p-1.5 text-stone-400 hover:text-red-400 rounded-lg hover:bg-slate-800 transition"
+              className="p-1.5 text-stone-500 hover:text-red-600 rounded-lg hover:bg-stone-100 transition"
               title="Verlassen"
             >
               <LogOut className="w-4 h-4" />
@@ -265,28 +281,28 @@ export function App() {
 
   // 3. IN-GAME BOARD VIEW
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-stone-100 font-display">
+    <div className="min-h-screen flex flex-col bg-amber-50/30 text-slate-900 font-display">
       {/* Game Header with Modern Red/Blue Matchup Indicator */}
-      <header className="sticky top-0 z-30 px-3 sm:px-6 py-2 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 flex items-center justify-between gap-2 shadow-md">
-        <div className="flex items-center gap-2.5">
+      <header className="sticky top-0 z-30 px-3 sm:px-6 py-2.5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between gap-2 shadow-xs text-slate-900">
+        <div className="flex items-center gap-2 sm:gap-3">
           <span className="font-black text-sm sm:text-base uppercase">
-            <span className="text-red-500">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-500">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
-          <span className="text-xs bg-slate-950 text-amber-400 font-black px-2 py-0.5 rounded-lg border border-slate-800">
+          <span className="text-xs bg-stone-100 text-slate-800 font-black px-2.5 py-0.5 rounded-lg border border-stone-300">
             {roomId}
           </span>
-          <span className="text-xs text-stone-400 font-bold hidden sm:inline">
+          <span className="text-xs text-stone-500 font-bold hidden sm:inline">
             Runde {state?.turnNumber || 1}
           </span>
         </div>
 
         <div>
           {isMyTurn ? (
-            <span className="px-3 py-1 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-600/30 animate-pulse">
-              DU BIST AM ZUG
+            <span className="px-3 py-1 bg-emerald-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md">
+              Du bist am Zug
             </span>
           ) : (
-            <span className="px-3 py-1 bg-slate-800 text-stone-300 font-bold text-xs rounded-xl border border-slate-700">
+            <span className="px-3 py-1 bg-stone-100 text-stone-600 font-bold text-xs rounded-xl border border-stone-300">
               {opponent?.name || 'Gegner'} am Zug...
             </span>
           )}
@@ -295,14 +311,14 @@ export function App() {
         <div className="flex items-center gap-1">
           <button
             onClick={toggleMute}
-            className="p-1.5 text-stone-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
+            className="p-1.5 text-stone-500 hover:text-slate-900 rounded-lg hover:bg-stone-100 transition"
             title="Ton"
           >
-            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-600" />}
           </button>
           <button
             onClick={handleLeaveRoom}
-            className="p-1.5 text-stone-400 hover:text-red-400 rounded-lg hover:bg-slate-800 transition"
+            className="p-1.5 text-stone-500 hover:text-red-600 rounded-lg hover:bg-stone-100 transition"
             title="Verlassen"
           >
             <LogOut className="w-4 h-4" />
@@ -311,11 +327,11 @@ export function App() {
       </header>
 
       {/* Main Board Area */}
-      <main className="flex-1 w-full max-w-5xl mx-auto p-2 sm:p-3 flex flex-col gap-2 pb-24">
+      <main className="flex-1 w-full max-w-5xl mx-auto p-2 sm:p-3 flex flex-col gap-3 pb-28">
         {/* Turn Action Bar */}
         {isMyTurn && state?.phase === 'QUESTION_TIME' && (
-          <div className="w-full flex items-center justify-between p-2 bg-slate-900 border border-slate-800 rounded-2xl gap-2 shadow-lg">
-            <span className="text-xs font-bold text-stone-300 font-sans">
+          <div className="w-full flex items-center justify-between p-2 sm:p-2.5 bg-white border-2 border-stone-200 rounded-2xl gap-2 shadow-sm">
+            <span className="text-xs font-black text-stone-700 font-sans">
               Aktion wählen:
             </span>
 
@@ -328,8 +344,8 @@ export function App() {
                 }}
                 className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
                   isQuestionOpen
-                    ? 'bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20'
-                    : 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-lg shadow-green-600/20'
+                    ? 'bg-amber-400 text-slate-950 shadow-md'
+                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
                 }`}
               >
                 <HelpCircle className="w-4 h-4" /> Frage stellen
@@ -343,11 +359,11 @@ export function App() {
                 }}
                 className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
                   isGuessMode
-                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white ring-2 ring-red-400 shadow-lg shadow-red-600/30'
-                    : 'bg-slate-800 text-red-400 border border-red-500/40'
+                    ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
+                    : 'bg-stone-100 text-red-600 border border-red-300 hover:bg-red-50'
                 }`}
               >
-                <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Lösen (Wer ist es?)'}
+                <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
               </button>
             </div>
           </div>
@@ -407,13 +423,13 @@ export function App() {
       </main>
 
       {/* Docked Secret Card Bar at Bottom */}
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 p-2 shadow-2xl">
+      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 p-2 sm:p-2.5 shadow-2xl">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
           <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
 
           <div className="text-right text-xs">
-            <span className="text-stone-400 block text-[10px] uppercase font-bold">Gegner: {opponent?.name || 'Spieler 2'}</span>
-            <span className="font-black text-amber-400 text-sm">
+            <span className="text-stone-500 block text-[10px] uppercase font-bold">Gegner: {opponent?.name || 'Spieler 2'}</span>
+            <span className="font-black text-amber-600 text-sm">
               {opponent?.cardCountEliminated || 0} / {state?.selectedDeck.characters.length || 24} umgeklappt
             </span>
           </div>
