@@ -29,12 +29,12 @@ export const Card: React.FC<CardProps> = ({
     <div
       onClick={handleClick}
       className={`
-        guess-tile relative cursor-pointer select-none rounded-xl p-1 sm:p-1.5 flex flex-col items-center justify-between
-        transition-all duration-200
+        guess-tile relative cursor-pointer select-none rounded-xl p-1 flex flex-col items-center justify-between
+        w-full h-full min-h-0 transition-all duration-200
         ${
           isEliminated
             ? 'guess-tile-down bg-amber-500/40 border-2 border-amber-700/50 shadow-inner'
-            : 'guess-tile-up bg-amber-400 border-2 border-amber-500 shadow-md hover:-translate-y-1 hover:shadow-lg'
+            : 'guess-tile-up bg-amber-400 border-2 border-amber-500 shadow-sm hover:-translate-y-0.5'
         }
         ${
           isGuessMode && !isEliminated
@@ -42,7 +42,6 @@ export const Card: React.FC<CardProps> = ({
             : ''
         }
       `}
-      style={{ aspectRatio: '3/4', minHeight: '115px' }}
       title={isGuessMode ? `${character.name} als Verdacht wählen` : `${character.name} umklappen`}
     >
       {/* White Plastic/Paper Card Insert */}

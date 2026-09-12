@@ -20,6 +20,8 @@ import {
   LogOut,
   Play,
   ArrowRight,
+  History,
+  X,
 } from 'lucide-react';
 
 export function App() {
@@ -41,6 +43,7 @@ export function App() {
   const [isQuestionOpen, setIsQuestionOpen] = useState(false);
   const [guessTargetChar, setGuessTargetChar] = useState<Character | null>(null);
   const [isGuessMode, setIsGuessMode] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
 
   const { muted, toggleMute, playSound } = useAudio();
 
@@ -279,21 +282,30 @@ export function App() {
     );
   }
 
-  // 3. IN-GAME BOARD VIEW
+  // 3. IN-GAME BOARD VIEW (100% viewport fit, KEIN SCROLLEN)
   return (
-    <div className="min-h-screen flex flex-col bg-amber-50/30 text-slate-900 font-display">
-      {/* Game Header with Modern Red/Blue Matchup Indicator */}
-      <header className="sticky top-0 z-30 px-3 sm:px-6 py-2.5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between gap-2 shadow-xs text-slate-900">
+    <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-amber-50/40 text-slate-900 font-display select-none">
+      {/* Game Header */}
+      <header className="h-11 flex-shrink-0 px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between gap-2 shadow-xs text-slate-900 z-30">
         <div className="flex items-center gap-2 sm:gap-3">
-          <span className="font-black text-sm sm:text-base uppercase">
+          <span className="font-black text-sm sm:text-base uppercase tracking-tight">
             <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
-          <span className="text-xs bg-stone-100 text-slate-800 font-black px-2.5 py-0.5 rounded-lg border border-stone-300">
+          <span className="text-xs bg-stone-100 text-slate-800 font-black px-2 py-0.5 rounded-lg border border-stone-300">
             {roomId}
           </span>
           <span className="text-xs text-stone-500 font-bold hidden sm:inline">
             Runde {state?.turnNumber || 1}
           </span>
+          {state && state.history.length > 0 && (
+            <button
+              onClick={() => setIsHistoryOpen((prev) => !prev)}
+              className="btn-board px-2.5 py-0.5 bg-stone-100 hover:bg-stone-200 text-xs font-bold text-stone-700 rounded-lg flex items-center gap-1 border border-stone-300"
+            >
+              <History className="w-3.5 h-3.5 text-blue-600" />
+              <span className="hidden sm:inline">Verlauf</span> ({state.history.length})
+            </button>
+          )}
         </div>
 
         <div>
@@ -326,77 +338,8 @@ export function App() {
         </div>
       </header>
 
-      {/* Main Board Area */}
-      <main className="flex-1 w-full max-w-5xl mx-auto p-2 sm:p-3 flex flex-col gap-3 pb-28">
-        {/* Turn Action Bar */}
-        {isMyTurn && state?.phase === 'QUESTION_TIME' && (
-          <div className="w-full flex items-center justify-between p-2 sm:p-2.5 bg-white border-2 border-stone-200 rounded-2xl gap-2 shadow-sm">
-            <span className="text-xs font-black text-stone-700 font-sans">
-              Aktion wählen:
-            </span>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => {
-                  playSound('click');
-                  setIsGuessMode(false);
-                  setIsQuestionOpen((prev) => !prev);
-                }}
-                className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
-                  isQuestionOpen
-                    ? 'bg-amber-400 text-slate-950 shadow-md'
-                    : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
-                }`}
-              >
-                <HelpCircle className="w-4 h-4" /> Frage stellen
-              </button>
-
-              <button
-                onClick={() => {
-                  playSound('click');
-                  setIsQuestionOpen(false);
-                  setIsGuessMode((prev) => !prev);
-                }}
-                className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
-                  isGuessMode
-                    ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
-                    : 'bg-stone-100 text-red-600 border border-red-300 hover:bg-red-50'
-                }`}
-              >
-                <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Inline Question Shelf */}
-        {state && (
-          <QuestionDialog
-            isOpen={isQuestionOpen && isMyTurn && state.phase === 'QUESTION_TIME'}
-            onClose={() => setIsQuestionOpen(false)}
-            onAsk={(q, filter) => {
-              playSound('click');
-              askQuestion(q, filter);
-            }}
-            deck={state.selectedDeck}
-          />
-        )}
-
-        {/* Inline Answer Banner */}
-        {state && (
-          <AnswerModal
-            isOpen={isAnswerTimeForMe}
-            questionText={state.currentQuestion?.text || ''}
-            askerName={state.currentQuestion?.askerName || 'Gegner'}
-            mySecretCharacter={state.mySecretCharacter}
-            onAnswer={(ans) => {
-              playSound('click');
-              answerQuestion(ans);
-            }}
-          />
-        )}
-
-        {/* The 24-Tile Modern Molded Stadium Tray (Red for Slot 1, Blue for Slot 2) */}
+      {/* Main Board Area (100% restliche Höhe ohne Scrollen) */}
+      <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto px-2 py-1 sm:py-1.5 flex flex-col items-center justify-center overflow-hidden">
         {state && (
           <Board
             characters={state.selectedDeck.characters}
@@ -413,28 +356,101 @@ export function App() {
             playerSlot={mySlot}
           />
         )}
-
-        {/* Turn History */}
-        {state && (
-          <div className="w-full mt-2">
-            <GameHistory history={state.history} myPlayerId={playerId} />
-          </div>
-        )}
       </main>
 
-      {/* Docked Secret Card Bar at Bottom */}
-      <footer className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 p-2 sm:p-2.5 shadow-2xl">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3">
-          <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
+      {/* Docked Action & Secret Card Bar at Bottom */}
+      <footer className="h-14 flex-shrink-0 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 px-3 sm:px-5 flex items-center justify-between gap-3 shadow-md z-30">
+        <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
 
-          <div className="text-right text-xs">
-            <span className="text-stone-500 block text-[10px] uppercase font-bold">Gegner: {opponent?.name || 'Spieler 2'}</span>
-            <span className="font-black text-amber-600 text-sm">
-              {opponent?.cardCountEliminated || 0} / {state?.selectedDeck.characters.length || 24} umgeklappt
-            </span>
+        {/* Turn Action Buttons centered in bottom bar */}
+        {isMyTurn && state?.phase === 'QUESTION_TIME' ? (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                playSound('click');
+                setIsGuessMode(false);
+                setIsQuestionOpen(true);
+              }}
+              className="btn-board px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
+            >
+              <HelpCircle className="w-4 h-4" /> Frage stellen
+            </button>
+
+            <button
+              onClick={() => {
+                playSound('click');
+                setIsQuestionOpen(false);
+                setIsGuessMode((prev) => !prev);
+              }}
+              className={`btn-board px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
+                isGuessMode
+                  ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
+                  : 'bg-stone-100 text-red-600 border border-red-300 hover:bg-red-50'
+              }`}
+            >
+              <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
+            </button>
           </div>
+        ) : (
+          <div className="hidden sm:block text-xs font-bold text-stone-400">
+            {isMyTurn ? 'Karten umklappen oder Zug beenden' : 'Warte auf Mitspieler...'}
+          </div>
+        )}
+
+        <div className="text-right text-xs leading-tight">
+          <span className="text-stone-500 block text-[10px] uppercase font-bold">
+            Gegner: {opponent?.name || 'Spieler 2'}
+          </span>
+          <span className="font-black text-amber-600 text-xs sm:text-sm">
+            {opponent?.cardCountEliminated || 0} / {state?.selectedDeck.characters.length || 24} umgeklappt
+          </span>
         </div>
       </footer>
+
+      {/* History Modal Overlay (verdrängt das Spielbrett nicht) */}
+      {isHistoryOpen && state && (
+        <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-100">
+          <div className="bg-white border-2 border-stone-200 rounded-3xl w-full max-w-md shadow-2xl p-4">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-200">
+              <span className="font-black text-sm text-slate-900 uppercase">Spielverlauf</span>
+              <button
+                onClick={() => setIsHistoryOpen(false)}
+                className="p-1 text-stone-500 hover:text-slate-900 rounded-lg hover:bg-stone-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <GameHistory history={state.history} myPlayerId={playerId} />
+          </div>
+        </div>
+      )}
+
+      {/* Question Dialog Modal */}
+      {state && (
+        <QuestionDialog
+          isOpen={isQuestionOpen && isMyTurn && state.phase === 'QUESTION_TIME'}
+          onClose={() => setIsQuestionOpen(false)}
+          onAsk={(q, filter) => {
+            playSound('click');
+            askQuestion(q, filter);
+          }}
+          deck={state.selectedDeck}
+        />
+      )}
+
+      {/* Answer Modal */}
+      {state && (
+        <AnswerModal
+          isOpen={isAnswerTimeForMe}
+          questionText={state.currentQuestion?.text || ''}
+          askerName={state.currentQuestion?.askerName || 'Gegner'}
+          mySecretCharacter={state.mySecretCharacter}
+          onAnswer={(ans) => {
+            playSound('click');
+            answerQuestion(ans);
+          }}
+        />
+      )}
 
       {/* Guess Modal */}
       {state && (

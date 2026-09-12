@@ -188,23 +188,9 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({ character, cla
           </g>
         )}
 
-        {/* Iconic Green Sweater with Name on Chest */}
+        {/* Iconic Green Sweater */}
         <path d="M 12 95 C 12 73 34 68 50 68 C 66 68 88 73 88 95 Z" fill="#166534" stroke="#14532d" strokeWidth="1.5" />
         <path d="M 40 68 L 50 78 L 60 68 Z" fill="#ffedd5" />
-
-        {/* Name Printed Across the Green Sweater */}
-        <text
-          x="50"
-          y="90"
-          textAnchor="middle"
-          fill="#ffffff"
-          fontSize="9.5"
-          fontWeight="900"
-          fontFamily="Fredoka, sans-serif"
-          letterSpacing="0.5"
-        >
-          {character.name.toUpperCase()}
-        </text>
       </svg>
     </div>
   );
