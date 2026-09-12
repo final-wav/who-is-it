@@ -286,7 +286,7 @@ export function App() {
   return (
     <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-amber-50/40 text-slate-900 font-display select-none">
       {/* Game Header */}
-      <header className="h-11 flex-shrink-0 px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between gap-2 shadow-xs text-slate-900 z-30">
+      <header className="relative h-12 flex-shrink-0 px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between shadow-xs text-slate-900 z-30">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="font-black text-sm sm:text-base uppercase tracking-tight">
             <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
@@ -308,16 +308,19 @@ export function App() {
           )}
         </div>
 
-        <div>
-          {isMyTurn ? (
-            <span className="px-3 py-1 bg-emerald-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md">
-              Du bist am Zug
-            </span>
-          ) : (
-            <span className="px-3 py-1 bg-stone-100 text-stone-600 font-bold text-xs rounded-xl border border-stone-300">
-              {opponent?.name || 'Gegner'} am Zug...
-            </span>
-          )}
+        {/* Mathematisch exakt zentrierte Zug-Anzeige */}
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-none">
+          <div className="pointer-events-auto">
+            {isMyTurn ? (
+              <span className="px-4 py-1.5 bg-emerald-600 text-white font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-md whitespace-nowrap">
+                Du bist am Zug
+              </span>
+            ) : (
+              <span className="px-3.5 py-1 bg-stone-100 text-stone-600 font-bold text-xs rounded-xl border border-stone-300 whitespace-nowrap">
+                {opponent?.name || 'Gegner'} am Zug...
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-1">
@@ -358,46 +361,48 @@ export function App() {
         )}
       </main>
 
-      {/* Docked Action & Secret Card Bar at Bottom */}
-      <footer className="h-14 flex-shrink-0 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 px-3 sm:px-5 flex items-center justify-between gap-3 shadow-md z-30">
+      {/* Docked Action & Secret Card Bar at Bottom (Großzügig für Geheimkarte) */}
+      <footer className="relative h-18 sm:h-22 flex-shrink-0 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 px-3 sm:px-6 flex items-center justify-between gap-3 shadow-md z-30">
         <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
 
-        {/* Turn Action Buttons centered in bottom bar */}
+        {/* Turn Action Buttons exakt in der Mitte zentriert */}
         {isMyTurn && state?.phase === 'QUESTION_TIME' ? (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                playSound('click');
-                setIsGuessMode(false);
-                setIsQuestionOpen(true);
-              }}
-              className="btn-board px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm"
-            >
-              <HelpCircle className="w-4 h-4" /> Frage stellen
-            </button>
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-none">
+            <div className="pointer-events-auto flex items-center gap-2">
+              <button
+                onClick={() => {
+                  playSound('click');
+                  setIsGuessMode(false);
+                  setIsQuestionOpen(true);
+                }}
+                className="btn-board px-4 py-2 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white shadow-md whitespace-nowrap"
+              >
+                <HelpCircle className="w-4 h-4" /> Frage stellen
+              </button>
 
-            <button
-              onClick={() => {
-                playSound('click');
-                setIsQuestionOpen(false);
-                setIsGuessMode((prev) => !prev);
-              }}
-              className={`btn-board px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 transition ${
-                isGuessMode
-                  ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
-                  : 'bg-stone-100 text-red-600 border border-red-300 hover:bg-red-50'
-              }`}
-            >
-              <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
-            </button>
+              <button
+                onClick={() => {
+                  playSound('click');
+                  setIsQuestionOpen(false);
+                  setIsGuessMode((prev) => !prev);
+                }}
+                className={`btn-board px-4 py-2 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 transition whitespace-nowrap ${
+                  isGuessMode
+                    ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
+                    : 'bg-stone-100 text-red-600 border border-red-300 hover:bg-red-50'
+                }`}
+              >
+                <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="hidden sm:block text-xs font-bold text-stone-400">
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hidden md:block text-xs font-bold text-stone-400">
             {isMyTurn ? 'Karten umklappen oder Zug beenden' : 'Warte auf Mitspieler...'}
           </div>
         )}
 
-        <div className="text-right text-xs leading-tight">
+        <div className="text-right text-xs leading-tight ml-auto">
           <span className="text-stone-500 block text-[10px] uppercase font-bold">
             Gegner: {opponent?.name || 'Spieler 2'}
           </span>
