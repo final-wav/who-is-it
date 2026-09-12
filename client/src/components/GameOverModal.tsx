@@ -23,21 +23,20 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
 
   useEffect(() => {
     if (isWinner) {
-      // Fire victory confetti cannons
-      const duration = 2.5 * 1000;
+      const duration = 2 * 1000;
       const end = Date.now() + duration;
 
       const frame = () => {
         confetti({
-          particleCount: 4,
+          particleCount: 3,
           angle: 60,
-          spread: 55,
+          spread: 50,
           origin: { x: 0 },
         });
         confetti({
-          particleCount: 4,
+          particleCount: 3,
           angle: 120,
-          spread: 55,
+          spread: 50,
           origin: { x: 1 },
         });
 
@@ -50,64 +49,57 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
   }, [isWinner]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-lg flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-300">
-      <div className="bg-slate-900 border-2 border-slate-700 w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-8 text-center relative overflow-hidden">
-        {/* Glow effect */}
-        <div
-          className={`absolute -top-24 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-3xl pointer-events-none opacity-40 ${
-            isWinner ? 'bg-amber-400' : 'bg-rose-600'
-          }`}
-        />
-
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <div className="bg-slate-900 border-2 border-slate-700 w-full max-w-lg rounded-xl shadow-2xl p-6 sm:p-7 text-center relative">
         {/* Icon & Title */}
-        <div className="relative mb-3">
+        <div className="mb-3">
           <div
-            className={`w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-2xl flex items-center justify-center shadow-2xl ${
+            className={`w-14 h-14 mx-auto rounded-xl flex items-center justify-center border-2 ${
               isWinner
-                ? 'bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950'
-                : 'bg-gradient-to-tr from-rose-600 to-red-400 text-white'
+                ? 'bg-amber-950/80 border-retro-amber text-retro-amber'
+                : 'bg-red-950/80 border-retro-red text-retro-red'
             }`}
           >
-            {isWinner ? <Trophy className="w-10 h-10" /> : <Frown className="w-10 h-10" />}
+            {isWinner ? <Trophy className="w-8 h-8" /> : <Frown className="w-8 h-8" />}
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">
-          {isWinner ? 'Du hast gewonnen!' : 'Niederlage!'}
+        <h2 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight mb-1">
+          {isWinner ? 'Sieg!' : 'Niederlage!'}
         </h2>
-        <p className="text-sm text-slate-300 mb-6">
+        <p className="text-xs sm:text-sm text-stone-300 mb-5 font-sans">
           {isWinner
-            ? 'Genial kombiniert! Du hast die geheime Identität deines Gegners enttarnt.'
+            ? 'Du hast die Identität deines Gegenübers erfolgreich aufgedeckt.'
             : gameOverData.reason === 'WRONG_GUESS'
             ? 'Ein falscher Lösungsversuch hat das Spiel entschieden.'
-            : `${gameOverData.winnerName} hat deine Identität erraten.`}
+            : `${gameOverData.winnerName} hat deine Karte zuerst erraten.`}
         </p>
 
-        {/* Secret Cards Reveal */}
-        <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 mb-6">
-          <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
-            Aufdeckung der geheimen Karten
-          </h4>
-          <div className="grid grid-cols-2 gap-4">
+        {/* Both Cards Revealed */}
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3.5 mb-5">
+          <span className="text-[10px] font-mono font-bold text-stone-400 uppercase tracking-wider block mb-2.5">
+            Aufdeckung beider Geheimkarten
+          </span>
+          <div className="grid grid-cols-2 gap-3">
             {gameOverData.player1Secret && (
-              <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-[11px] font-semibold text-slate-400 mb-1.5">Spieler 1</span>
-                <div className="w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border border-slate-700 mb-1.5">
+              <div className="flex flex-col items-center p-2 rounded bg-slate-900 border border-slate-800">
+                <span className="text-[10px] font-mono text-stone-400 mb-1">Spieler 1 (Rot)</span>
+                <div className="w-14 h-18 sm:w-16 sm:h-20 rounded overflow-hidden border border-slate-700 mb-1">
                   <CharacterAvatar character={gameOverData.player1Secret} />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-white truncate max-w-[120px]">
+                <span className="text-xs font-bold text-white truncate max-w-[100px]">
                   {gameOverData.player1Secret.name}
                 </span>
               </div>
             )}
 
             {gameOverData.player2Secret && (
-              <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span className="text-[11px] font-semibold text-slate-400 mb-1.5">Spieler 2</span>
-                <div className="w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border border-slate-700 mb-1.5">
+              <div className="flex flex-col items-center p-2 rounded bg-slate-900 border border-slate-800">
+                <span className="text-[10px] font-mono text-stone-400 mb-1">Spieler 2 (Blau)</span>
+                <div className="w-14 h-18 sm:w-16 sm:h-20 rounded overflow-hidden border border-slate-700 mb-1">
                   <CharacterAvatar character={gameOverData.player2Secret} />
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-white truncate max-w-[120px]">
+                <span className="text-xs font-bold text-white truncate max-w-[100px]">
                   {gameOverData.player2Secret.name}
                 </span>
               </div>
@@ -115,19 +107,19 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row gap-2.5">
           <button
             onClick={onLeaveRoom}
-            className="flex-1 py-3.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm"
+            className="btn-tactile flex-1 py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-stone-300 font-mono font-bold rounded-lg border border-slate-700 transition flex items-center justify-center gap-1.5 text-xs uppercase"
           >
-            <Home className="w-4 h-4" /> Raum verlassen
+            <Home className="w-3.5 h-3.5" /> Tisch verlassen
           </button>
           <button
             onClick={onRematch}
-            className="flex-1 py-3.5 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-extrabold rounded-xl shadow-lg shadow-sky-500/25 transition transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm"
+            className="btn-tactile flex-1 py-2.5 px-3 bg-retro-blue hover:bg-retro-blue-dark text-white font-display font-black rounded-lg shadow-tactile transition flex items-center justify-center gap-1.5 text-xs sm:text-sm uppercase tracking-wider"
           >
-            <RotateCcw className="w-4 h-4" /> Revanche / Nochmal
+            <RotateCcw className="w-4 h-4" /> Revanche
           </button>
         </div>
       </div>

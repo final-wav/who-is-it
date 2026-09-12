@@ -6,23 +6,33 @@ export default {
   ],
   theme: {
     extend: {
-      colors: {
-        game: {
-          dark: '#0a0f1d',
-          surface: '#131b2e',
-          card: '#1e293b',
-          border: '#334155',
-          accent: '#38bdf8',
-          yellow: '#facc15',
-          red: '#f43f5e',
-          green: '#22c55e',
-          purple: '#a855f7',
-        }
+      fontFamily: {
+        sans: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
-      animation: {
-        'bounce-short': 'bounce 0.5s ease-in-out 2',
-        'pulse-subtle': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }
+      colors: {
+        table: {
+          dark: '#0a0e17',
+          surface: '#111726',
+          panel: '#182032',
+          border: '#253047',
+        },
+        retro: {
+          red: '#dc2626',
+          'red-dark': '#991b1b',
+          blue: '#0284c7',
+          'blue-dark': '#075985',
+          amber: '#d97706',
+          'amber-dark': '#b45309',
+          green: '#16a34a',
+          'green-dark': '#15803d',
+        },
+      },
+      boxShadow: {
+        'tactile': '0 4px 0 0 rgba(0,0,0,0.5)',
+        'tactile-pressed': '0 1px 0 0 rgba(0,0,0,0.5)',
+        'tile': '0 8px 16px -2px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.2)',
+      },
     },
   },
   plugins: [],

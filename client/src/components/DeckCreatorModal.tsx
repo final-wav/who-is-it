@@ -7,10 +7,10 @@ import {
   Download,
   Save,
   Trash2,
-  Sparkles,
-  Plus,
-  Image as ImageIcon,
+  Camera,
+  FileJson,
   Check,
+  FolderOpen,
 } from 'lucide-react';
 
 interface DeckCreatorModalProps {
@@ -19,7 +19,6 @@ interface DeckCreatorModalProps {
   onSelectCustomDeck: (deck: Deck) => void;
 }
 
-// Helper to resize/compress uploaded images via canvas to keep Base64 compact (~200x200px JPEG)
 async function compressImageFile(file: File, maxSize: number = 220): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -51,7 +50,6 @@ async function compressImageFile(file: File, maxSize: number = 220): Promise<str
         }
 
         ctx.drawImage(img, 0, 0, width, height);
-        // Convert to quality 0.82 JPEG
         resolve(canvas.toDataURL('image/jpeg', 0.82));
       };
       img.onerror = reject;
@@ -67,10 +65,9 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
   onClose,
   onSelectCustomDeck,
 }) => {
-  const [deckName, setDeckName] = useState<string>('Mein eigenes Deck');
-  const [deckDesc, setDeckDesc] = useState<string>('Eigene Bilder und Freunde');
+  const [deckName, setDeckName] = useState<string>('Mein Foto-Deck');
+  const [deckDesc, setDeckDesc] = useState<string>('Eigene Bilder und Namen');
   const [characters, setCharacters] = useState<Character[]>(() => {
-    // Load from local storage or create 24 default customizable slots
     const saved = localStorage.getItem('who_is_it_custom_deck');
     if (saved) {
       try {
@@ -87,7 +84,7 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
       'Alex', 'Ben', 'Clara', 'David', 'Emma', 'Felix',
       'Greta', 'Hannah', 'Jonas', 'Leon', 'Lina', 'Lukas',
       'Mia', 'Noah', 'Paul', 'Sarah', 'Simon', 'Sophie',
-      'Tim', 'Tom', 'Laura', 'Maximilian', 'Anna', 'Julian'
+      'Tim', 'Tom', 'Laura', 'Max', 'Anna', 'Julian'
     ];
 
     return Array.from({ length: 24 }).map((_, i) => ({
@@ -99,9 +96,7 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
     }));
   });
 
-  const [activeCharIndex, setActiveCharIndex] = useState<number | null>(null);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const jsonImportInputRef = useRef<HTMLInputElement | null>(null);
 
   if (!isOpen) return null;
@@ -192,40 +187,40 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-700/80 w-full max-w-5xl rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden my-auto">
-        {/* Modal Header */}
-        <div className="px-5 py-4 bg-slate-800/80 border-b border-slate-700 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div className="bg-slate-900 border-2 border-slate-700 w-full max-w-5xl rounded-xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden my-auto">
+        {/* Header */}
+        <div className="px-5 py-3.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-purple-500/20 text-purple-400 rounded-xl">
-              <Sparkles className="w-5 h-5" />
+            <div className="p-2 bg-slate-800 text-stone-200 rounded-lg border border-slate-700">
+              <Camera className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-white">
-                Deck-Creator: Eigene Bilder & Namen
+              <h2 className="text-base sm:text-lg font-display font-bold text-white">
+                Karten-Werkstatt: Eigene Fotos & Namen
               </h2>
-              <p className="text-xs text-slate-400">
-                Lade Fotos von Freunden, Familie oder Stars hoch und vergib eigene Namen.
+              <p className="text-xs text-stone-400">
+                Lade Bilder von Freunden, Familie oder Promis hoch.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-700/60 transition"
+            className="p-1.5 text-stone-400 hover:text-white rounded hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Toolbar & Meta */}
-        <div className="p-4 bg-slate-950/40 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex-1 min-w-[240px] flex items-center gap-3">
+        {/* Toolbar */}
+        <div className="p-3.5 bg-slate-900 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex-1 min-w-[220px]">
             <input
               type="text"
               value={deckName}
               onChange={(e) => setDeckName(e.target.value)}
-              placeholder="Deck-Name (z.B. Schulklasse 10B)"
-              className="px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:border-purple-400 flex-1"
+              placeholder="Name des Decks (z. B. Freundeskreis)"
+              className="w-full px-3 py-1.5 bg-slate-950 border border-slate-700 rounded text-white text-xs sm:text-sm font-medium focus:outline-none focus:border-retro-blue"
             />
           </div>
 
@@ -241,45 +236,45 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
             />
             <button
               onClick={() => jsonImportInputRef.current?.click()}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5"
+              className="btn-tactile px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 text-xs font-semibold rounded border border-slate-700 flex items-center gap-1.5"
             >
-              <Upload className="w-3.5 h-3.5" /> JSON Import
+              <FolderOpen className="w-3.5 h-3.5" /> Import
             </button>
 
             <button
               onClick={handleExportJSON}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition flex items-center gap-1.5"
+              className="btn-tactile px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 text-xs font-semibold rounded border border-slate-700 flex items-center gap-1.5"
             >
               <Download className="w-3.5 h-3.5" /> Export
             </button>
 
             <button
               onClick={handleSaveDeck}
-              className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5"
+              className="btn-tactile px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-200 text-xs font-semibold rounded border border-slate-700 flex items-center gap-1.5"
             >
-              {saveSuccess ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Save className="w-3.5 h-3.5" />}
-              {saveSuccess ? 'Gespeichert!' : 'Speichern'}
+              {saveSuccess ? <Check className="w-3.5 h-3.5 text-retro-green" /> : <Save className="w-3.5 h-3.5" />}
+              {saveSuccess ? 'Gespeichert' : 'Speichern'}
             </button>
           </div>
         </div>
 
         {/* 24 Cards Grid */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="flex-1 overflow-y-auto p-4 bg-slate-950/60">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
             {characters.map((char, index) => {
               const hasCustomImg = Boolean(char.image);
 
               return (
                 <div
                   key={char.id}
-                  className="bg-slate-800/80 border border-slate-700 rounded-xl p-2 flex flex-col items-center gap-2 group hover:border-purple-400/80 transition shadow-md"
+                  className="bg-slate-900 border border-slate-800 rounded-lg p-2 flex flex-col items-center gap-1.5 hover:border-slate-600 transition"
                 >
                   {/* Avatar / Image Preview */}
-                  <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-slate-700/60 bg-slate-900 group">
+                  <div className="relative w-full aspect-square rounded overflow-hidden border border-slate-700 bg-slate-950 group">
                     <CharacterAvatar character={char} />
 
                     {/* Upload / Replace Overlay Button */}
-                    <label className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition p-2 text-center text-xs text-white">
+                    <label className="absolute inset-0 bg-slate-950/80 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition p-2 text-center text-xs text-white">
                       <input
                         type="file"
                         accept="image/*"
@@ -288,8 +283,8 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
                           if (e.target.files?.[0]) handleFileUpload(index, e.target.files[0]);
                         }}
                       />
-                      <Upload className="w-5 h-5 mb-1 text-purple-400" />
-                      <span>{hasCustomImg ? 'Bild ändern' : 'Bild hochladen'}</span>
+                      <Upload className="w-4 h-4 mb-1 text-stone-300" />
+                      <span className="text-[10px] font-bold uppercase">{hasCustomImg ? 'Ändern' : 'Foto wählen'}</span>
                     </label>
 
                     {hasCustomImg && (
@@ -298,7 +293,7 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
                           e.stopPropagation();
                           handleRemoveImage(index);
                         }}
-                        className="absolute top-1 right-1 p-1 bg-rose-950/80 border border-rose-600/60 text-rose-300 rounded hover:bg-rose-800 transition"
+                        className="absolute top-1 right-1 p-1 bg-retro-red-dark text-white rounded hover:bg-retro-red transition"
                         title="Bild entfernen"
                       >
                         <Trash2 className="w-3 h-3" />
@@ -312,7 +307,7 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
                     value={char.name}
                     onChange={(e) => handleNameChange(index, e.target.value)}
                     placeholder={`Name ${index + 1}`}
-                    className="w-full text-center px-2 py-1 bg-slate-900 border border-slate-700 rounded-lg text-xs font-semibold text-white focus:outline-none focus:border-purple-400"
+                    className="w-full text-center px-1.5 py-1 bg-slate-950 border border-slate-700 rounded text-xs font-semibold text-white focus:outline-none focus:border-retro-blue"
                   />
                 </div>
               );
@@ -320,24 +315,24 @@ export const DeckCreatorModal: React.FC<DeckCreatorModalProps> = ({
           </div>
         </div>
 
-        {/* Modal Footer */}
-        <div className="px-5 py-4 bg-slate-800/80 border-t border-slate-700 flex items-center justify-between">
-          <span className="text-xs text-slate-400">
-            {characters.filter(c => Boolean(c.image)).length} von 24 Karten mit eigenem Bild versehen
+        {/* Footer */}
+        <div className="px-5 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between">
+          <span className="text-xs text-stone-400 font-mono">
+            {characters.filter(c => Boolean(c.image)).length} / 24 mit Foto
           </span>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white rounded-xl transition"
+              className="px-3 py-1.5 text-xs font-semibold text-stone-400 hover:text-white transition"
             >
-              Schließen
+              Abbrechen
             </button>
             <button
               onClick={handleUseDeckNow}
-              className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold rounded-xl shadow-lg shadow-purple-600/30 transition transform hover:scale-105 active:scale-95 flex items-center gap-2"
+              className="btn-tactile px-4 py-2 bg-retro-blue hover:bg-retro-blue-dark text-white text-xs sm:text-sm font-bold rounded-lg shadow-tactile flex items-center gap-1.5 uppercase tracking-wide"
             >
-              <Sparkles className="w-4 h-4" /> Dieses Deck im Spiel nutzen
+              <Check className="w-4 h-4" /> Deck im Spiel verwenden
             </button>
           </div>
         </div>

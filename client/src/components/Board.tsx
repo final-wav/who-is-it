@@ -1,7 +1,7 @@
 import React from 'react';
 import { Character, GamePhase } from '../../../worker/types';
 import { Card } from './Card';
-import { RotateCcw, CheckCircle2, HelpCircle } from 'lucide-react';
+import { RotateCcw, Check, ArrowDownCircle } from 'lucide-react';
 
 interface BoardProps {
   characters: Character[];
@@ -36,57 +36,59 @@ export const Board: React.FC<BoardProps> = ({
     <div className="w-full flex flex-col items-center">
       {/* Action Banner for Elimination Time */}
       {phase === 'ELIMINATION_TIME' && isMyTurn && (
-        <div className="w-full max-w-4xl mb-4 p-3.5 bg-gradient-to-r from-sky-950/80 via-indigo-950/80 to-purple-950/80 border border-sky-500/50 rounded-2xl shadow-xl flex flex-wrap items-center justify-between gap-3 animate-pulse-subtle">
+        <div className="w-full max-w-4xl mb-4 p-3.5 bg-slate-900 border-2 border-retro-blue rounded-xl shadow-tactile flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <span className="text-2xl">👇</span>
+            <div className="p-2 bg-retro-blue/20 text-retro-blue rounded-lg">
+              <ArrowDownCircle className="w-5 h-5" />
+            </div>
             <div>
-              <p className="font-bold text-sky-200 text-sm md:text-base">
-                Antwort erhalten! Jetzt Karten umklappen
+              <p className="font-display font-bold text-white text-sm md:text-base">
+                Antwort erhalten: Karten umklappen
               </p>
-              <p className="text-xs text-slate-300">
-                Klicke auf alle Karten, die ausgeschlossen sind. Wenn du fertig bist, beende deinen Zug.
+              <p className="text-xs text-stone-300">
+                Klicke auf alle Figuren, die nach dieser Antwort ausgeschlossen sind.
               </p>
             </div>
           </div>
           <button
             onClick={onEndElimination}
-            className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all transform hover:scale-105 active:scale-95 flex items-center gap-2 text-sm"
+            className="btn-tactile px-4 py-2 bg-retro-green hover:bg-retro-green-dark text-white font-bold rounded-lg shadow-tactile flex items-center gap-1.5 text-xs sm:text-sm uppercase tracking-wide"
           >
-            <CheckCircle2 className="w-4 h-4" /> Fertig / Zug beenden
+            <Check className="w-4 h-4" /> Zug beenden
           </button>
         </div>
       )}
 
       {/* Board Header Bar */}
-      <div className="w-full max-w-6xl mb-3 px-3 py-2 bg-slate-900/60 backdrop-blur-md border border-slate-800 rounded-xl flex items-center justify-between text-xs md:text-sm text-slate-300">
-        <div className="flex items-center gap-3">
-          <span className="font-semibold text-white">Dein Spielbrett</span>
-          <span className="bg-sky-950 text-sky-400 border border-sky-800/60 px-2 py-0.5 rounded-full font-bold">
-            {activeCount} von {characters.length} aktiv
+      <div className="w-full max-w-6xl mb-3 px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between text-xs text-stone-300">
+        <div className="flex items-center gap-3 font-sans">
+          <span className="font-bold text-white uppercase tracking-wider text-[11px]">Dein Spielbrett</span>
+          <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded font-mono font-bold text-stone-200">
+            {activeCount} / {characters.length} aktiv
           </span>
           {eliminatedIds.length > 0 && (
-            <span className="text-slate-400 hidden sm:inline">
+            <span className="text-stone-400 font-mono hidden sm:inline">
               ({eliminatedIds.length} umgeklappt)
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div>
           {eliminatedIds.length > 0 && (
             <button
               onClick={handleResetAll}
-              className="text-xs text-slate-400 hover:text-white px-2.5 py-1 rounded-lg hover:bg-slate-800 transition flex items-center gap-1.5"
-              title="Alle Karten wieder aufrecht stellen"
+              className="text-xs text-stone-400 hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition flex items-center gap-1"
+              title="Alle Karten wieder aufrichten"
             >
-              <RotateCcw className="w-3.5 h-3.5" /> Alle aufstellen
+              <RotateCcw className="w-3.5 h-3.5" /> Aufrichten
             </button>
           )}
         </div>
       </div>
 
-      {/* 3D Board Grid (Desktop: 6 columns, Tablet: 4 columns, Mobile: 3 columns) */}
+      {/* 3D Board Grid */}
       <div className="w-full max-w-6xl perspective-1000">
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 sm:gap-3 p-3 sm:p-4 bg-slate-950/70 border border-slate-800/80 rounded-2xl shadow-2xl backdrop-blur-md">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 p-3 sm:p-4 bg-[#0e1422] border-2 border-slate-800 rounded-xl shadow-2xl">
           {characters.map((char) => {
             const isEliminated = eliminatedIds.includes(char.id);
             return (

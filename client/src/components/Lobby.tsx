@@ -5,11 +5,11 @@ import {
   Copy,
   Check,
   Play,
-  Settings,
-  Sparkles,
   Layers,
-  HelpCircle,
-  PlusCircle,
+  Plus,
+  User,
+  PawPrint,
+  Camera,
 } from 'lucide-react';
 
 interface LobbyProps {
@@ -27,11 +27,9 @@ export const Lobby: React.FC<LobbyProps> = ({
   roomState,
   roomId,
   playerName,
-  onPlayerNameChange,
   onStartGame,
   onOpenDeckCreator,
   customDeck,
-  onToggleInstantLoss,
 }) => {
   const [copied, setCopied] = useState(false);
   const [selectedDeckType, setSelectedDeckType] = useState<'classic' | 'animals' | 'custom'>(
@@ -49,7 +47,6 @@ export const Lobby: React.FC<LobbyProps> = ({
   const p1 = roomState?.players.find((p) => p.slot === 1);
   const p2 = roomState?.players.find((p) => p.slot === 2);
   const bothConnected = Boolean(p1?.connected && p2?.connected);
-  const isHost = roomState?.mySlot === 1;
 
   const handleStart = () => {
     if (selectedDeckType === 'custom' && customDeck) {
@@ -60,166 +57,169 @@ export const Lobby: React.FC<LobbyProps> = ({
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-5 p-4 sm:p-6 animate-in fade-in duration-300">
+    <div className="w-full max-w-2xl mx-auto flex flex-col gap-4 p-3 sm:p-5">
       {/* Title & Room Code Card */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center shadow-2xl backdrop-blur-md relative overflow-hidden">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-full text-xs font-bold uppercase tracking-wider mb-3">
-          <Users className="w-3.5 h-3.5" /> Spiel-Lobby
+      <div className="bg-slate-900 border-2 border-slate-800 rounded-xl p-5 sm:p-6 text-center shadow-xl">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-800 border border-slate-700 text-stone-300 rounded text-xs font-mono font-bold uppercase tracking-wider mb-2">
+          <Users className="w-3.5 h-3.5" /> 1v1 Spieltisch
         </div>
 
-        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-2">
+        <h1 className="text-2xl sm:text-3xl font-display font-black text-white tracking-tight mb-1">
           Wer ist es?
         </h1>
-        <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
-          Lade einen Freund ein, um gegeneinander im 1v1-Duell anzutreten.
+        <p className="text-xs text-stone-400 max-w-sm mx-auto mb-4 font-sans">
+          Teile den Code oder Einladungslink mit deinem Spielpartner.
         </p>
 
         {/* Room Code Badge & Copy Link */}
-        <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-lg mx-auto">
+        <div className="bg-slate-950 border border-slate-800 rounded-lg p-3 flex flex-col sm:flex-row items-center justify-between gap-3 max-w-md mx-auto">
           <div className="text-left">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span className="text-[10px] font-mono uppercase text-stone-500 tracking-wider">
               Raum-Code
             </span>
-            <div className="text-2xl font-black text-sky-400 tracking-widest">{roomId}</div>
+            <div className="text-2xl font-mono font-black text-retro-blue tracking-widest leading-none">
+              {roomId}
+            </div>
           </div>
 
           <button
             onClick={handleCopyLink}
-            className="w-full sm:w-auto px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-bold rounded-xl transition flex items-center justify-center gap-2"
+            className="btn-tactile w-full sm:w-auto px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-stone-200 text-xs font-bold rounded border border-slate-700 transition flex items-center justify-center gap-1.5 font-mono"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-emerald-400" /> Link kopiert!
+                <Check className="w-3.5 h-3.5 text-retro-green" /> Kopiert!
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4 text-sky-400" /> Einladungslink kopieren
+                <Copy className="w-3.5 h-3.5 text-stone-400" /> Link kopieren
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Players Card */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl backdrop-blur-md">
-        <h3 className="text-sm font-bold text-slate-300 mb-3 flex items-center gap-2">
-          <Users className="w-4 h-4 text-sky-400" /> Spieler ({roomState?.players.length || 1}/2)
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Player 1 */}
-          <div className="p-3.5 rounded-xl border bg-slate-800/60 border-slate-700 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-              <div>
-                <span className="text-xs text-slate-400 font-medium">Spieler 1 (Host)</span>
-                <p className="text-sm font-bold text-white truncate max-w-[140px]">
-                  {p1?.name || playerName || 'Host'}
-                </p>
-              </div>
+      {/* Players Trays: Red Player & Blue Player */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Slot 1: Red Player */}
+        <div className="bg-slate-900 border-2 border-retro-red/60 rounded-xl p-3.5 flex items-center justify-between shadow-tactile">
+          <div className="flex items-center gap-2.5">
+            <span className="w-3 h-3 rounded-full bg-retro-red flex-shrink-0" />
+            <div>
+              <span className="text-[10px] font-mono text-stone-400 uppercase tracking-wider block">
+                Spieler 1 (Rot)
+              </span>
+              <p className="text-sm font-bold text-white truncate max-w-[130px]">
+                {p1?.name || playerName || 'Host'}
+              </p>
             </div>
-            <span className="text-[10px] font-bold bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded-full">
-              Bereit
-            </span>
           </div>
+          <span className="text-[10px] font-mono font-bold bg-slate-800 text-stone-300 px-2 py-0.5 rounded border border-slate-700">
+            Bereit
+          </span>
+        </div>
 
-          {/* Player 2 */}
-          <div
-            className={`p-3.5 rounded-xl border flex items-center justify-between transition ${
+        {/* Slot 2: Blue Player */}
+        <div
+          className={`rounded-xl p-3.5 flex items-center justify-between border-2 transition ${
+            p2?.connected
+              ? 'bg-slate-900 border-retro-blue/60 shadow-tactile'
+              : 'bg-slate-950/60 border-dashed border-slate-800'
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            <span
+              className={`w-3 h-3 rounded-full flex-shrink-0 ${
+                p2?.connected ? 'bg-retro-blue' : 'bg-stone-600 animate-pulse'
+              }`}
+            />
+            <div>
+              <span className="text-[10px] font-mono text-stone-400 uppercase tracking-wider block">
+                Spieler 2 (Blau)
+              </span>
+              <p className="text-sm font-bold text-white truncate max-w-[130px]">
+                {p2?.connected ? p2.name : 'Wartet auf Beitritt...'}
+              </p>
+            </div>
+          </div>
+          <span
+            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
               p2?.connected
-                ? 'bg-slate-800/60 border-slate-700'
-                : 'bg-slate-950/40 border-dashed border-slate-800'
+                ? 'bg-slate-800 text-stone-200 border-slate-700'
+                : 'bg-slate-900 text-stone-500 border-slate-800'
             }`}
           >
-            <div className="flex items-center gap-3">
-              <span
-                className={`w-3 h-3 rounded-full ${
-                  p2?.connected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400/80 animate-ping'
-                }`}
-              />
-              <div>
-                <span className="text-xs text-slate-400 font-medium">Spieler 2</span>
-                <p className="text-sm font-bold text-white truncate max-w-[140px]">
-                  {p2?.connected ? p2.name : 'Warte auf Mitspieler...'}
-                </p>
-              </div>
-            </div>
-            <span
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                p2?.connected
-                  ? 'bg-sky-500/20 text-sky-400'
-                  : 'bg-amber-500/20 text-amber-400'
-              }`}
-            >
-              {p2?.connected ? 'Beigetreten' : 'Wartet...'}
-            </span>
-          </div>
+            {p2?.connected ? 'Beigetreten' : 'Offen'}
+          </span>
         </div>
       </div>
 
-      {/* Deck Selector & Custom Decks Card */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 shadow-xl backdrop-blur-md">
+      {/* Deck Selector Card */}
+      <div className="bg-slate-900 border-2 border-slate-800 rounded-xl p-4 shadow-xl">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-purple-400" /> Kartenpaket (Deck) wählen
+          <h3 className="text-xs font-mono font-bold text-stone-300 uppercase tracking-wider flex items-center gap-1.5">
+            <Layers className="w-3.5 h-3.5 text-stone-400" /> Kartenpaket wählen
           </h3>
           <button
             onClick={onOpenDeckCreator}
-            className="text-xs font-bold text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
+            className="text-xs font-bold text-stone-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1 rounded transition flex items-center gap-1"
           >
-            <PlusCircle className="w-3.5 h-3.5" /> Eigene Bilder & Namen hochladen
+            <Plus className="w-3.5 h-3.5 text-retro-amber" /> Eigene Fotos & Namen
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {/* Classic Deck */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* Classic */}
           <div
             onClick={() => setSelectedDeckType('classic')}
-            className={`cursor-pointer p-3.5 rounded-xl border transition ${
+            className={`cursor-pointer p-3 rounded-lg border-2 transition ${
               selectedDeckType === 'classic'
-                ? 'bg-sky-950/50 border-sky-500 shadow-md shadow-sky-500/10'
-                : 'bg-slate-800/40 border-slate-700/60 hover:border-slate-600'
+                ? 'bg-slate-800 border-retro-blue'
+                : 'bg-slate-950 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <span className="text-2xl mb-1 block">👤</span>
-            <div className="text-sm font-bold text-white">Klassisch</div>
-            <p className="text-xs text-slate-400 mt-0.5">24 klassische Gesichter</p>
+            <div className="w-7 h-7 rounded bg-slate-800 flex items-center justify-center mb-1.5 text-retro-blue border border-slate-700">
+              <User className="w-4 h-4" />
+            </div>
+            <div className="text-xs font-bold text-white font-display">Klassisch (24)</div>
+            <p className="text-[11px] text-stone-400 mt-0.5">Originale Gesichter</p>
           </div>
 
-          {/* Animals Deck */}
+          {/* Animals */}
           <div
             onClick={() => setSelectedDeckType('animals')}
-            className={`cursor-pointer p-3.5 rounded-xl border transition ${
+            className={`cursor-pointer p-3 rounded-lg border-2 transition ${
               selectedDeckType === 'animals'
-                ? 'bg-sky-950/50 border-sky-500 shadow-md shadow-sky-500/10'
-                : 'bg-slate-800/40 border-slate-700/60 hover:border-slate-600'
+                ? 'bg-slate-800 border-retro-blue'
+                : 'bg-slate-950 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <span className="text-2xl mb-1 block">🦁</span>
-            <div className="text-sm font-bold text-white">Tiere</div>
-            <p className="text-xs text-slate-400 mt-0.5">24 Tiere & Eigenschaften</p>
+            <div className="w-7 h-7 rounded bg-slate-800 flex items-center justify-center mb-1.5 text-retro-amber border border-slate-700">
+              <PawPrint className="w-4 h-4" />
+            </div>
+            <div className="text-xs font-bold text-white font-display">Tiere (24)</div>
+            <p className="text-[11px] text-stone-400 mt-0.5">Tierreich & Merkmale</p>
           </div>
 
-          {/* Custom Deck */}
+          {/* Custom */}
           <div
             onClick={() => {
-              if (customDeck) {
-                setSelectedDeckType('custom');
-              } else {
-                onOpenDeckCreator();
-              }
+              if (customDeck) setSelectedDeckType('custom');
+              else onOpenDeckCreator();
             }}
-            className={`cursor-pointer p-3.5 rounded-xl border transition ${
+            className={`cursor-pointer p-3 rounded-lg border-2 transition ${
               selectedDeckType === 'custom'
-                ? 'bg-purple-950/50 border-purple-500 shadow-md shadow-purple-500/10'
-                : 'bg-slate-800/40 border-slate-700/60 hover:border-slate-600'
+                ? 'bg-slate-800 border-retro-amber'
+                : 'bg-slate-950 border-slate-800 hover:border-slate-700'
             }`}
           >
-            <span className="text-2xl mb-1 block">📸</span>
-            <div className="text-sm font-bold text-white truncate">
-              {customDeck ? customDeck.name : 'Eigenes Deck'}
+            <div className="w-7 h-7 rounded bg-slate-800 flex items-center justify-center mb-1.5 text-retro-amber border border-slate-700">
+              <Camera className="w-4 h-4" />
             </div>
-            <p className="text-xs text-purple-300 mt-0.5 truncate">
+            <div className="text-xs font-bold text-white font-display truncate">
+              {customDeck ? customDeck.name : 'Eigenes Foto-Deck'}
+            </div>
+            <p className="text-[11px] text-stone-400 mt-0.5 truncate">
               {customDeck ? 'Bereit zum Spielen' : '+ Jetzt erstellen'}
             </p>
           </div>
@@ -227,20 +227,18 @@ export const Lobby: React.FC<LobbyProps> = ({
       </div>
 
       {/* Start Button */}
-      <div className="pt-2">
+      <div className="pt-1">
         <button
           onClick={handleStart}
           disabled={!bothConnected}
-          className={`w-full py-4 px-6 rounded-2xl font-black text-base sm:text-lg shadow-2xl transition-all flex items-center justify-center gap-2.5 ${
+          className={`btn-tactile w-full py-3.5 px-5 rounded-lg font-display font-black text-sm uppercase tracking-wider shadow-tactile transition flex items-center justify-center gap-2 ${
             bothConnected
-              ? 'bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white shadow-sky-500/30 transform hover:scale-[1.02] active:scale-[0.98]'
-              : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50'
+              ? 'bg-retro-green hover:bg-retro-green-dark text-white'
+              : 'bg-slate-800 text-stone-500 cursor-not-allowed border border-slate-700'
           }`}
         >
-          <Play className="w-5 h-5 fill-current" />
-          {bothConnected
-            ? 'Match starten!'
-            : 'Warte auf Mitspieler zum Starten...'}
+          <Play className="w-4 h-4 fill-current" />
+          {bothConnected ? 'Partie starten' : 'Warte auf 2. Person am Tisch...'}
         </button>
       </div>
     </div>
