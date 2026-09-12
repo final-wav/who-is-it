@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Deck, SanitizedRoomState } from '../../../worker/types';
-import { Copy, Check, Play, Plus, User, PawPrint, Camera } from 'lucide-react';
+import { getAllAvailableDecks } from '../utils/decks';
+import { Copy, Check, Play, User } from 'lucide-react';
 
 interface LobbyProps {
   roomState: SanitizedRoomState | null;
@@ -8,9 +9,6 @@ interface LobbyProps {
   playerName: string;
   onPlayerNameChange: (name: string) => void;
   onStartGame: (deckId?: string, customDeck?: Deck) => void;
-  onOpenDeckCreator: () => void;
-  customDeck: Deck | null;
-  onToggleInstantLoss: (val: boolean) => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -18,13 +16,10 @@ export const Lobby: React.FC<LobbyProps> = ({
   roomId,
   playerName,
   onStartGame,
-  onOpenDeckCreator,
-  customDeck,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [selectedDeckType, setSelectedDeckType] = useState<'classic' | 'animals' | 'custom'>(
-    customDeck ? 'custom' : 'classic'
-  );
+  const [availableDecks] = useState<Deck[]>(() => getAllAvailableDecks());
+  const [selectedDeckId, setSelectedDeckId] = useState<string>(availableDecks[0]?.id || 'classic');
 
   const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
 
@@ -39,10 +34,11 @@ export const Lobby: React.FC<LobbyProps> = ({
   const bothConnected = Boolean(p1?.connected && p2?.connected);
 
   const handleStart = () => {
-    if (selectedDeckType === 'custom' && customDeck) {
-      onStartGame(undefined, customDeck);
+    const chosen = availableDecks.find((d) => d.id === selectedDeckId);
+    if (chosen?.isCustom) {
+      onStartGame(undefined, chosen);
     } else {
-      onStartGame(selectedDeckType);
+      onStartGame(selectedDeckId);
     }
   };
 
@@ -111,61 +107,27 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Deck Chooser */}
+      {/* Clean Deck Chooser: Only lists available decks, NO upload/creator buttons */}
       <div className="bg-slate-900 border-2 border-slate-800 rounded-xl p-3.5 shadow-md">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-stone-300 uppercase tracking-wide">
-            Kartenpaket
-          </span>
-          <button
-            onClick={onOpenDeckCreator}
-            className="btn-toy text-xs font-bold text-amber-400 hover:text-amber-300 bg-amber-950/60 border border-amber-800 px-2.5 py-1 rounded flex items-center gap-1"
-          >
-            <Plus className="w-3 h-3" /> Eigene Fotos hochladen
-          </button>
-        </div>
+        <span className="text-xs font-bold text-stone-300 uppercase tracking-wide block mb-2">
+          Kartenpaket wählen
+        </span>
 
-        <div className="grid grid-cols-3 gap-2">
-          <button
-            onClick={() => setSelectedDeckType('classic')}
-            className={`p-2.5 rounded-lg border-2 text-center transition ${
-              selectedDeckType === 'classic'
-                ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow'
-                : 'bg-slate-950 border-slate-800 text-stone-300'
-            }`}
-          >
-            <User className="w-4 h-4 mx-auto mb-1" />
-            <span className="text-xs block font-bold">Klassisch</span>
-          </button>
-
-          <button
-            onClick={() => setSelectedDeckType('animals')}
-            className={`p-2.5 rounded-lg border-2 text-center transition ${
-              selectedDeckType === 'animals'
-                ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow'
-                : 'bg-slate-950 border-slate-800 text-stone-300'
-            }`}
-          >
-            <PawPrint className="w-4 h-4 mx-auto mb-1" />
-            <span className="text-xs block font-bold">Tiere</span>
-          </button>
-
-          <button
-            onClick={() => {
-              if (customDeck) setSelectedDeckType('custom');
-              else onOpenDeckCreator();
-            }}
-            className={`p-2.5 rounded-lg border-2 text-center transition ${
-              selectedDeckType === 'custom'
-                ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow'
-                : 'bg-slate-950 border-slate-800 text-stone-300'
-            }`}
-          >
-            <Camera className="w-4 h-4 mx-auto mb-1" />
-            <span className="text-xs block font-bold truncate">
-              {customDeck ? customDeck.name : 'Eigenes Deck'}
-            </span>
-          </button>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {availableDecks.map((deck) => (
+            <button
+              key={deck.id}
+              onClick={() => setSelectedDeckId(deck.id)}
+              className={`p-2.5 rounded-lg border-2 text-center transition ${
+                selectedDeckId === deck.id
+                  ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow'
+                  : 'bg-slate-950 border-slate-800 text-stone-300 hover:border-slate-700'
+              }`}
+            >
+              <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
+              <span className="text-xs block font-bold truncate">{deck.name}</span>
+            </button>
+          ))}
         </div>
       </div>
 

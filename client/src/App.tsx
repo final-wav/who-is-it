@@ -9,7 +9,7 @@ import { AnswerModal } from './components/AnswerModal';
 import { GuessModal } from './components/GuessModal';
 import { GameOverModal } from './components/GameOverModal';
 import { GameHistory } from './components/GameHistory';
-import { DeckCreatorModal } from './components/DeckCreatorModal';
+import { AdminDeckEditor } from './components/AdminDeckEditor';
 import { Character, Deck } from '../../worker/types';
 import { getBackendBaseUrl } from './utils/api';
 import {
@@ -18,12 +18,20 @@ import {
   HelpCircle,
   Target,
   LogOut,
-  Camera,
   Play,
-  ArrowRight,
 } from 'lucide-react';
 
 export function App() {
+  // Check if admin secret route is requested (?admin=decks, ?admin=true, or #admin)
+  const isAdmin =
+    new URLSearchParams(window.location.search).get('admin') === 'true' ||
+    new URLSearchParams(window.location.search).get('admin') === 'decks' ||
+    window.location.hash === '#admin';
+
+  if (isAdmin) {
+    return <AdminDeckEditor />;
+  }
+
   const [playerName, setPlayerName] = useState<string>(() => {
     return localStorage.getItem('who_is_it_player_name') || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
   });
@@ -33,18 +41,6 @@ export function App() {
   const [isQuestionOpen, setIsQuestionOpen] = useState(false);
   const [guessTargetChar, setGuessTargetChar] = useState<Character | null>(null);
   const [isGuessMode, setIsGuessMode] = useState(false);
-  const [isDeckCreatorOpen, setIsDeckCreatorOpen] = useState(false);
-  const [customDeck, setCustomDeck] = useState<Deck | null>(() => {
-    const saved = localStorage.getItem('who_is_it_custom_deck');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  });
 
   const { muted, toggleMute, playSound } = useAudio();
 
@@ -166,12 +162,11 @@ export function App() {
   const opponent = state?.players.find(p => p.id !== playerId);
   const mySlot = state?.mySlot || 1;
 
-  // 1. WELCOME SCREEN
+  // 1. WELCOME SCREEN (Clean, simple, no admin or upload clutter)
   if (!roomId) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-3 bg-slate-900">
         <div className="w-full max-w-sm bg-slate-900 border-4 border-slate-800 rounded-2xl p-5 shadow-tray text-center">
-          {/* Classic Board Game Title */}
           <h1 className="text-4xl font-display font-black text-white tracking-tight uppercase mb-1">
             <span className="text-red-600">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-600">es?</span>
           </h1>
@@ -197,7 +192,7 @@ export function App() {
             <Play className="w-4 h-4 fill-current" /> Raum erstellen
           </button>
 
-          <form onSubmit={handleJoinRoom} className="flex gap-1.5 mb-4">
+          <form onSubmit={handleJoinRoom} className="flex gap-1.5">
             <input
               type="text"
               value={joinInputCode}
@@ -214,22 +209,7 @@ export function App() {
               Beitreten
             </button>
           </form>
-
-          <div className="pt-3 border-t border-slate-800">
-            <button
-              onClick={() => setIsDeckCreatorOpen(true)}
-              className="btn-toy w-full py-2 bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold rounded-lg text-xs flex items-center justify-center gap-1.5"
-            >
-              <Camera className="w-3.5 h-3.5" /> Eigene Fotos & Namen hochladen
-            </button>
-          </div>
         </div>
-
-        <DeckCreatorModal
-          isOpen={isDeckCreatorOpen}
-          onClose={() => setIsDeckCreatorOpen(false)}
-          onSelectCustomDeck={(deck) => setCustomDeck(deck)}
-        />
       </div>
     );
   }
@@ -268,17 +248,8 @@ export function App() {
             playerName={playerName}
             onPlayerNameChange={setPlayerName}
             onStartGame={startGame}
-            onOpenDeckCreator={() => setIsDeckCreatorOpen(true)}
-            customDeck={customDeck}
-            onToggleInstantLoss={(val) => updateSettings({ instantLossOnWrongGuess: val })}
           />
         </main>
-
-        <DeckCreatorModal
-          isOpen={isDeckCreatorOpen}
-          onClose={() => setIsDeckCreatorOpen(false)}
-          onSelectCustomDeck={(deck) => setCustomDeck(deck)}
-        />
       </div>
     );
   }
@@ -288,7 +259,6 @@ export function App() {
     <div className="min-h-screen flex flex-col bg-slate-950 text-stone-100">
       {/* Game Header */}
       <header className="sticky top-0 z-30 px-3 py-2 bg-slate-900 border-b-2 border-slate-800 flex items-center justify-between gap-2 shadow-sm">
-        {/* Left: Deck & Room */}
         <div className="flex items-center gap-2">
           <span className="font-display font-black text-sm uppercase">
             <span className="text-red-500">Wer</span> <span className="text-stone-300">ist</span> <span className="text-blue-500">es?</span>
@@ -301,7 +271,6 @@ export function App() {
           </span>
         </div>
 
-        {/* Center: Turn Status */}
         <div>
           {isMyTurn ? (
             <span className="px-3 py-1 bg-green-600 text-white font-display font-black text-xs uppercase tracking-wider rounded shadow">
@@ -314,7 +283,6 @@ export function App() {
           )}
         </div>
 
-        {/* Right: Sound & Leave */}
         <div className="flex items-center gap-1">
           <button
             onClick={toggleMute}
@@ -347,7 +315,7 @@ export function App() {
                 onClick={() => {
                   playSound('click');
                   setIsGuessMode(false);
-                  setIsQuestionOpen(prev => !prev);
+                  setIsQuestionOpen((prev) => !prev);
                 }}
                 className={`btn-toy px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wide flex items-center gap-1 ${
                   isQuestionOpen ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-white'
@@ -360,7 +328,7 @@ export function App() {
                 onClick={() => {
                   playSound('click');
                   setIsQuestionOpen(false);
-                  setIsGuessMode(prev => !prev);
+                  setIsGuessMode((prev) => !prev);
                 }}
                 className={`btn-toy px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wide flex items-center gap-1 ${
                   isGuessMode ? 'bg-red-600 text-white' : 'bg-slate-800 text-red-400'
@@ -372,7 +340,7 @@ export function App() {
           </div>
         )}
 
-        {/* Inline Question Shelf (Non-blocking so player can see all cards) */}
+        {/* Inline Question Shelf */}
         {state && (
           <QuestionDialog
             isOpen={isQuestionOpen && isMyTurn && state.phase === 'QUESTION_TIME'}
@@ -385,7 +353,7 @@ export function App() {
           />
         )}
 
-        {/* Inline Answer Banner (When opponent asks me a question) */}
+        {/* Inline Answer Banner */}
         {state && (
           <AnswerModal
             isOpen={isAnswerTimeForMe}
@@ -439,7 +407,7 @@ export function App() {
         </div>
       </footer>
 
-      {/* Guess Modal for Confirmation */}
+      {/* Guess Modal */}
       {state && (
         <GuessModal
           isOpen={Boolean(guessTargetChar)}
@@ -467,12 +435,6 @@ export function App() {
           onLeaveRoom={handleLeaveRoom}
         />
       )}
-
-      <DeckCreatorModal
-        isOpen={isDeckCreatorOpen}
-        onClose={() => setIsDeckCreatorOpen(false)}
-        onSelectCustomDeck={(deck) => setCustomDeck(deck)}
-      />
     </div>
   );
 }
