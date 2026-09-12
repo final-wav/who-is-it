@@ -7,31 +7,34 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Space Grotesk"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        table: {
-          dark: '#0a0e17',
-          surface: '#111726',
-          panel: '#182032',
-          border: '#253047',
+        tray: {
+          red: {
+            DEFAULT: '#dc2626',
+            dark: '#991b1b',
+            rim: '#b91c1c',
+            light: '#ef4444',
+          },
+          blue: {
+            DEFAULT: '#2563eb',
+            dark: '#1e40af',
+            rim: '#1d4ed8',
+            light: '#3b82f6',
+          },
         },
-        retro: {
-          red: '#dc2626',
-          'red-dark': '#991b1b',
-          blue: '#0284c7',
-          'blue-dark': '#075985',
-          amber: '#d97706',
-          'amber-dark': '#b45309',
-          green: '#16a34a',
-          'green-dark': '#15803d',
+        frame: {
+          yellow: '#facc15',
+          'yellow-dark': '#ca8a04',
+          'yellow-rim': '#eab308',
         },
       },
       boxShadow: {
-        'tactile': '0 4px 0 0 rgba(0,0,0,0.5)',
-        'tactile-pressed': '0 1px 0 0 rgba(0,0,0,0.5)',
-        'tile': '0 8px 16px -2px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.2)',
+        'tray': '0 8px 0 0 rgba(0,0,0,0.35), 0 12px 20px -4px rgba(0,0,0,0.5)',
+        'tile-up': '0 4px 0 0 rgba(0,0,0,0.25), 0 6px 10px rgba(0,0,0,0.15)',
+        'btn-tactile': '0 3px 0 0 rgba(0,0,0,0.3)',
       },
     },
   },

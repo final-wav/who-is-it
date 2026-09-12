@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Character } from '../../../worker/types';
 import { CharacterAvatar } from './CharacterAvatar';
-import { Eye, EyeOff, Shield } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface SecretCardViewProps {
   secretCharacter: Character | null;
@@ -10,56 +10,42 @@ interface SecretCardViewProps {
 export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter }) => {
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
 
-  if (!secretCharacter) {
-    return null;
-  }
+  if (!secretCharacter) return null;
 
   return (
-    <div className="bg-slate-900 border-2 border-slate-800 rounded-xl p-2 sm:p-2.5 shadow-lg flex items-center gap-3">
-      {/* Privacy Guard Tile */}
+    <div className="flex items-center gap-2.5 bg-slate-900 border-2 border-slate-700 rounded-lg p-1.5 sm:p-2 text-white shadow-sm">
+      {/* Mini Card Slot */}
       <div
         onClick={() => setIsRevealed(prev => !prev)}
-        className="cursor-pointer relative w-14 h-18 sm:w-16 sm:h-20 rounded-lg overflow-hidden border-2 border-slate-700 bg-slate-950 flex flex-col items-center justify-center transition hover:border-slate-500 select-none flex-shrink-0"
-        title="Tippen zum Verdecken / Aufdecken"
+        className="w-11 h-14 sm:w-12 sm:h-16 bg-amber-400 border-2 border-amber-600 rounded p-0.5 cursor-pointer select-none flex flex-col overflow-hidden shadow"
+        title="Verdecken / Aufdecken"
       >
         {isRevealed ? (
-          <>
+          <div className="w-full h-full bg-white rounded overflow-hidden">
             <CharacterAvatar character={secretCharacter} className="w-full h-full object-cover" />
-            <div className="absolute top-1 right-1 bg-slate-900/90 p-0.5 rounded text-stone-300">
-              <EyeOff className="w-3 h-3" />
-            </div>
-          </>
+          </div>
         ) : (
-          <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center p-1.5 text-center">
-            <Shield className="w-4 h-4 text-stone-400 mb-1" />
-            <span className="text-[9px] font-bold text-stone-400 uppercase tracking-tighter leading-tight">
-              Verdeckt
-            </span>
+          <div className="w-full h-full bg-slate-800 rounded flex items-center justify-center text-stone-400">
+            <EyeOff className="w-4 h-4" />
           </div>
         )}
       </div>
 
-      {/* Info Label */}
-      <div className="flex flex-col">
-        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider font-mono">
+      <div>
+        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
           Deine Geheimkarte
         </span>
-        <div className="text-sm sm:text-base font-display font-black text-white truncate max-w-[130px] sm:max-w-[170px]">
+        <span className="text-sm sm:text-base font-display font-black leading-tight text-white">
           {isRevealed ? secretCharacter.name : '••••••••'}
-        </div>
-        <p className="text-[10px] text-stone-400 leading-tight">
-          {isRevealed
-            ? 'Deine Figur, die das Gegenüber erraten muss.'
-            : 'Vor Blicken geschützt.'}
-        </p>
+        </span>
       </div>
 
       <button
         onClick={() => setIsRevealed(prev => !prev)}
-        className="ml-auto p-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded border border-slate-700 transition"
+        className="btn-toy ml-1 p-1 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded border border-slate-700"
         title={isRevealed ? 'Verbergen' : 'Aufdecken'}
       >
-        {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4 text-retro-blue" />}
+        {isRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-amber-400" />}
       </button>
     </div>
   );

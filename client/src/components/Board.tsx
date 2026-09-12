@@ -1,7 +1,7 @@
 import React from 'react';
 import { Character, GamePhase } from '../../../worker/types';
 import { Card } from './Card';
-import { RotateCcw, Check, ArrowDownCircle } from 'lucide-react';
+import { RotateCcw, Check } from 'lucide-react';
 
 interface BoardProps {
   characters: Character[];
@@ -12,6 +12,7 @@ interface BoardProps {
   phase: GamePhase;
   isMyTurn: boolean;
   onEndElimination: () => void;
+  playerSlot?: 1 | 2 | null;
 }
 
 export const Board: React.FC<BoardProps> = ({
@@ -23,72 +24,67 @@ export const Board: React.FC<BoardProps> = ({
   phase,
   isMyTurn,
   onEndElimination,
+  playerSlot = 1,
 }) => {
   const activeCount = characters.length - eliminatedIds.length;
+  const isRedTray = playerSlot !== 2; // Slot 1 = Red, Slot 2 = Blue
 
   const handleResetAll = () => {
-    eliminatedIds.forEach(id => {
-      onToggleCard(id);
-    });
+    eliminatedIds.forEach(id => onToggleCard(id));
   };
 
   return (
     <div className="w-full flex flex-col items-center">
-      {/* Action Banner for Elimination Time */}
-      {phase === 'ELIMINATION_TIME' && isMyTurn && (
-        <div className="w-full max-w-4xl mb-4 p-3.5 bg-slate-900 border-2 border-retro-blue rounded-xl shadow-tactile flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-retro-blue/20 text-retro-blue rounded-lg">
-              <ArrowDownCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="font-display font-bold text-white text-sm md:text-base">
-                Antwort erhalten: Karten umklappen
-              </p>
-              <p className="text-xs text-stone-300">
-                Klicke auf alle Figuren, die nach dieser Antwort ausgeschlossen sind.
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onEndElimination}
-            className="btn-tactile px-4 py-2 bg-retro-green hover:bg-retro-green-dark text-white font-bold rounded-lg shadow-tactile flex items-center gap-1.5 text-xs sm:text-sm uppercase tracking-wide"
-          >
-            <Check className="w-4 h-4" /> Zug beenden
-          </button>
-        </div>
-      )}
-
-      {/* Board Header Bar */}
-      <div className="w-full max-w-6xl mb-3 px-4 py-2 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between text-xs text-stone-300">
-        <div className="flex items-center gap-3 font-sans">
-          <span className="font-bold text-white uppercase tracking-wider text-[11px]">Dein Spielbrett</span>
-          <span className="bg-slate-800 border border-slate-700 px-2 py-0.5 rounded font-mono font-bold text-stone-200">
-            {activeCount} / {characters.length} aktiv
-          </span>
-          {eliminatedIds.length > 0 && (
-            <span className="text-stone-400 font-mono hidden sm:inline">
-              ({eliminatedIds.length} umgeklappt)
+      {/* The Physical Molded Plastic Tray */}
+      <div
+        className={`w-full max-w-5xl rounded-2xl border-4 p-3 sm:p-4 shadow-tray transition-colors ${
+          isRedTray
+            ? 'bg-red-700 border-red-900'
+            : 'bg-blue-700 border-blue-900'
+        }`}
+      >
+        {/* Tray Top Bar */}
+        <div className="flex items-center justify-between pb-2 mb-2 border-b border-black/20 text-white font-bold text-xs sm:text-sm">
+          <div className="flex items-center gap-2">
+            <span className="uppercase tracking-wider font-display font-black text-sm sm:text-base">
+              {isRedTray ? 'Rotes Spielbrett' : 'Blaues Spielbrett'}
             </span>
-          )}
-        </div>
+            <span className="bg-black/25 px-2 py-0.5 rounded text-xs">
+              {activeCount} / {characters.length} stehen
+            </span>
+          </div>
 
-        <div>
           {eliminatedIds.length > 0 && (
             <button
               onClick={handleResetAll}
-              className="text-xs text-stone-400 hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition flex items-center gap-1"
-              title="Alle Karten wieder aufrichten"
+              className="btn-toy px-2.5 py-1 bg-black/20 hover:bg-black/30 rounded text-xs flex items-center gap-1 transition text-white/90"
             >
-              <RotateCcw className="w-3.5 h-3.5" /> Aufrichten
+              <RotateCcw className="w-3.5 h-3.5" /> Alle aufstellen
             </button>
           )}
         </div>
-      </div>
 
-      {/* 3D Board Grid */}
-      <div className="w-full max-w-6xl perspective-1000">
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 p-3 sm:p-4 bg-[#0e1422] border-2 border-slate-800 rounded-xl shadow-2xl">
+        {/* Action Prompt during Elimination Time */}
+        {phase === 'ELIMINATION_TIME' && isMyTurn && (
+          <div className="mb-3 p-2.5 bg-amber-300 text-slate-950 rounded-lg shadow-sm flex items-center justify-between gap-2">
+            <span className="font-extrabold text-xs sm:text-sm">
+              Antwort erhalten: Karten umklappen
+            </span>
+            <button
+              onClick={onEndElimination}
+              className="btn-toy px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-black rounded text-xs uppercase tracking-wider flex items-center gap-1"
+            >
+              <Check className="w-3.5 h-3.5" /> Fertig
+            </button>
+          </div>
+        )}
+
+        {/* 24 Tiles in the Molded Tray Grooves */}
+        <div
+          className={`perspective-board grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-2.5 p-2 sm:p-3 rounded-xl ${
+            isRedTray ? 'bg-red-800/90 shadow-inner' : 'bg-blue-800/90 shadow-inner'
+          }`}
+        >
           {characters.map((char) => {
             const isEliminated = eliminatedIds.includes(char.id);
             return (

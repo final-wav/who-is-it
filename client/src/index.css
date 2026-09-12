@@ -5,58 +5,57 @@
 @layer base {
   h1, h2, h3, .font-display {
     font-family: 'Outfit', sans-serif;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
   }
 }
 
-@layer utilities {
-  .perspective-1000 {
-    perspective: 1000px;
-  }
+/* Perspective for the 3D board */
+.perspective-board {
+  perspective: 1200px;
 }
 
-/* Tactile Physical Board Game Tile Flipping */
-.board-card {
-  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.25s ease, filter 0.25s ease;
+/* Physical Plastic Flip Tile */
+.guess-tile {
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.15), opacity 0.2s ease, filter 0.2s ease;
   transform-origin: bottom center;
 }
 
-.board-card-up {
+.guess-tile-up {
   transform: rotateX(0deg) translateZ(0);
 }
 
-.board-card-down {
-  transform: rotateX(74deg) translateY(10px) scale(0.92);
-  opacity: 0.32;
-  filter: grayscale(90%);
+.guess-tile-down {
+  transform: rotateX(80deg) translateY(12px) scale(0.92);
+  opacity: 0.28;
+  filter: grayscale(100%);
 }
 
-.board-card-down:hover {
-  opacity: 0.6;
-  filter: grayscale(40%);
+.guess-tile-down:hover {
+  opacity: 0.55;
+  filter: grayscale(50%);
 }
 
-/* Tactile push button effect (real physical game button feel) */
-.btn-tactile {
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+/* Tactile push button (authentic physical toy button feel) */
+.btn-toy {
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
 }
-.btn-tactile:active {
+.btn-toy:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.25);
 }
 
 /* Clean minimal scrollbars */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d131f;
+  background: #0f172a;
 }
 ::-webkit-scrollbar-thumb {
-  background: #253047;
-  border-radius: 4px;
+  background: #334155;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #374766;
+  background: #475569;
 }
