@@ -43,63 +43,71 @@ export const Lobby: React.FC<LobbyProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto flex flex-col gap-3 p-2 sm:p-4">
-      {/* Box Header: Classic Red & Blue Split */}
-      <div className="bg-slate-900 border-4 border-slate-800 rounded-2xl p-4 sm:p-5 text-center shadow-tray">
-        <h1 className="text-3xl sm:text-4xl font-display font-black text-white tracking-tight uppercase">
-          <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
-        </h1>
+    <div className="w-full max-w-xl mx-auto flex flex-col gap-3 p-2 sm:p-4 font-display">
+      {/* Box Header: Classic MB "WER IST ES?" */}
+      <div className="bg-slate-900 border-4 border-slate-800 rounded-3xl p-5 text-center shadow-tray-3d">
+        <div className="inline-block transform -rotate-1 hover:rotate-0 transition">
+          <span className="text-4xl sm:text-5xl font-black text-white tracking-tight uppercase">
+            <span className="bg-red-600 text-white px-3 py-1 rounded-xl shadow-md mr-1 border-2 border-red-700">
+              WER
+            </span>
+            <span className="text-amber-400 mx-1">IST</span>
+            <span className="bg-blue-600 text-white px-3 py-1 rounded-xl shadow-md ml-1 border-2 border-blue-700">
+              ES?
+            </span>
+          </span>
+        </div>
 
-        {/* Room Code Bar */}
-        <div className="mt-3 flex items-center justify-center gap-2 bg-slate-950 p-2 rounded-xl border border-slate-800">
-          <span className="text-xs font-mono font-bold text-stone-400">RAUM-CODE:</span>
-          <span className="text-xl font-mono font-black text-amber-400 tracking-widest">{roomId}</span>
+        {/* Room Code Badge */}
+        <div className="mt-4 flex items-center justify-center gap-3 bg-slate-950 p-2.5 rounded-2xl border-2 border-slate-800 max-w-sm mx-auto">
+          <span className="text-xs font-bold text-stone-400">RAUM-CODE:</span>
+          <span className="text-2xl font-black text-amber-400 tracking-widest">{roomId}</span>
           <button
             onClick={handleCopyLink}
-            className="btn-toy ml-2 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-stone-200 text-xs font-bold rounded flex items-center gap-1"
+            className="btn-board px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 border border-slate-700"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4 text-amber-400" />}
             {copied ? 'Kopiert' : 'Link'}
           </button>
         </div>
       </div>
 
-      {/* The Two Trays: Red (Host) vs Blue (Guest) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      {/* The Two Plastic Trays: Red (Player 1) vs Blue (Player 2) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Red Tray */}
-        <div className="bg-red-700 border-4 border-red-900 rounded-xl p-3 text-white shadow-tray flex items-center justify-between">
+        <div className="bg-red-600 border-4 border-red-800 rounded-2xl p-3.5 text-white shadow-tray-3d flex items-center justify-between">
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider block text-red-200">
+            <span className="text-xs font-black uppercase tracking-wider block text-red-200">
               Rotes Brett (Host)
             </span>
-            <span className="font-display font-black text-base truncate block max-w-[150px]">
+            <span className="text-lg font-black truncate block max-w-[150px]">
               {p1?.name || playerName || 'Host'}
             </span>
           </div>
-          <span className="bg-red-900/60 px-2 py-0.5 rounded text-xs font-bold">
+          <span className="bg-red-800/80 px-2.5 py-1 rounded-lg text-xs font-black">
             Bereit
           </span>
         </div>
 
         {/* Blue Tray */}
         <div
-          className={`border-4 rounded-xl p-3 transition shadow-tray flex items-center justify-between ${
+          className={`border-4 rounded-2xl p-3.5 transition shadow-tray-3d flex items-center justify-between ${
             p2?.connected
-              ? 'bg-blue-700 border-blue-900 text-white'
-              : 'bg-slate-900 border-dashed border-slate-800 text-stone-400'
+              ? 'bg-blue-600 border-blue-800 text-white'
+              : 'bg-slate-900 border-slate-800 text-stone-400 border-dashed'
           }`}
         >
           <div>
-            <span className="text-[10px] font-black uppercase tracking-wider block text-blue-200">
+            <span className="text-xs font-black uppercase tracking-wider block text-blue-200">
               Blaues Brett (Gast)
             </span>
-            <span className="font-display font-black text-base truncate block max-w-[150px] text-white">
+            <span className="text-lg font-black truncate block max-w-[150px] text-white">
               {p2?.connected ? p2.name : 'Warten auf Spieler 2...'}
             </span>
           </div>
           <span
-            className={`px-2 py-0.5 rounded text-xs font-bold ${
-              p2?.connected ? 'bg-blue-900/60 text-white' : 'bg-slate-800 text-stone-500'
+            className={`px-2.5 py-1 rounded-lg text-xs font-black ${
+              p2?.connected ? 'bg-blue-800/80 text-white' : 'bg-slate-800 text-stone-500'
             }`}
           >
             {p2?.connected ? 'Bereit' : 'Offen'}
@@ -107,9 +115,9 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Clean Deck Chooser: Only lists available decks, NO upload/creator buttons */}
-      <div className="bg-slate-900 border-2 border-slate-800 rounded-xl p-3.5 shadow-md">
-        <span className="text-xs font-bold text-stone-300 uppercase tracking-wide block mb-2">
+      {/* Deck Selector in Yellow Tile Look */}
+      <div className="bg-slate-900 border-4 border-slate-800 rounded-2xl p-4 shadow-md">
+        <span className="text-xs font-black text-amber-400 uppercase tracking-wider block mb-2">
           Kartenpaket wählen
         </span>
 
@@ -118,30 +126,30 @@ export const Lobby: React.FC<LobbyProps> = ({
             <button
               key={deck.id}
               onClick={() => setSelectedDeckId(deck.id)}
-              className={`p-2.5 rounded-lg border-2 text-center transition ${
+              className={`btn-board p-3 rounded-xl border-2 text-center transition ${
                 selectedDeckId === deck.id
-                  ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow'
+                  ? 'bg-amber-400 border-amber-600 text-slate-950 font-black shadow-tile-3d -translate-y-0.5'
                   : 'bg-slate-950 border-slate-800 text-stone-300 hover:border-slate-700'
               }`}
             >
-              <User className="w-4 h-4 mx-auto mb-1 opacity-70" />
-              <span className="text-xs block font-bold truncate">{deck.name}</span>
+              <User className="w-5 h-5 mx-auto mb-1 opacity-80" />
+              <span className="text-xs block font-black truncate">{deck.name}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Start Match Button */}
+      {/* Start Button: Big green 3D button */}
       <button
         onClick={handleStart}
         disabled={!bothConnected}
-        className={`btn-toy w-full py-3 rounded-xl font-display font-black text-sm uppercase tracking-wider shadow-tray transition flex items-center justify-center gap-2 ${
+        className={`btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider shadow-btn-green transition flex items-center justify-center gap-2 ${
           bothConnected
             ? 'bg-green-600 hover:bg-green-500 text-white'
-            : 'bg-slate-800 text-stone-500 cursor-not-allowed border border-slate-700'
+            : 'bg-slate-800 text-stone-500 cursor-not-allowed border border-slate-700 shadow-none'
         }`}
       >
-        <Play className="w-4 h-4 fill-current" />
+        <Play className="w-5 h-5 fill-current" />
         {bothConnected ? 'Spiel starten' : 'Warte auf Mitspieler...'}
       </button>
     </div>

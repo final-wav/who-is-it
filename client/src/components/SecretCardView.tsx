@@ -13,39 +13,39 @@ export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter 
   if (!secretCharacter) return null;
 
   return (
-    <div className="flex items-center gap-2.5 bg-slate-900 border-2 border-slate-700 rounded-lg p-1.5 sm:p-2 text-white shadow-sm">
-      {/* Mini Card Slot */}
+    <div className="flex items-center gap-3 bg-slate-900 border-2 border-slate-700 rounded-xl p-2 text-white shadow-md">
+      {/* Yellow Plastic Holder Slot */}
       <div
         onClick={() => setIsRevealed(prev => !prev)}
-        className="w-11 h-14 sm:w-12 sm:h-16 bg-amber-400 border-2 border-amber-600 rounded p-0.5 cursor-pointer select-none flex flex-col overflow-hidden shadow"
-        title="Verdecken / Aufdecken"
+        className="w-12 h-16 sm:w-14 sm:h-18 bg-amber-400 border-2 border-amber-600 rounded-lg p-1 cursor-pointer select-none flex flex-col overflow-hidden shadow-tile-3d hover:scale-105 transition"
+        title="Klicken zum Verdecken / Aufdecken"
       >
         {isRevealed ? (
-          <div className="w-full h-full bg-white rounded overflow-hidden">
+          <div className="w-full flex-1 bg-white rounded overflow-hidden">
             <CharacterAvatar character={secretCharacter} className="w-full h-full object-cover" />
           </div>
         ) : (
-          <div className="w-full h-full bg-slate-800 rounded flex items-center justify-center text-stone-400">
-            <EyeOff className="w-4 h-4" />
+          <div className="w-full flex-1 bg-slate-800 rounded flex items-center justify-center text-amber-400 font-display font-black text-lg">
+            ?
           </div>
         )}
       </div>
 
       <div>
-        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block">
+        <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider block font-display">
           Deine Geheimkarte
         </span>
-        <span className="text-sm sm:text-base font-display font-black leading-tight text-white">
+        <span className="text-base sm:text-lg font-display font-black leading-tight text-white block">
           {isRevealed ? secretCharacter.name : '••••••••'}
         </span>
       </div>
 
       <button
         onClick={() => setIsRevealed(prev => !prev)}
-        className="btn-toy ml-1 p-1 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded border border-slate-700"
+        className="btn-board p-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded-lg border border-slate-700"
         title={isRevealed ? 'Verbergen' : 'Aufdecken'}
       >
-        {isRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5 text-amber-400" />}
+        {isRevealed ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4 text-amber-400" />}
       </button>
     </div>
   );

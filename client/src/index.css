@@ -3,20 +3,22 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    font-family: 'Fredoka', 'Baloo 2', sans-serif;
+  }
   h1, h2, h3, .font-display {
-    font-family: 'Outfit', sans-serif;
-    letter-spacing: -0.01em;
+    font-family: 'Fredoka', sans-serif;
   }
 }
 
-/* Perspective for the 3D board */
+/* Perspective for board */
 .perspective-board {
   perspective: 1200px;
 }
 
-/* Physical Plastic Flip Tile */
+/* Physical Plastic Flip Tile (Iconic Guess Who Yellow Tile) */
 .guess-tile {
-  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.15), opacity 0.2s ease, filter 0.2s ease;
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.2s ease, filter 0.2s ease;
   transform-origin: bottom center;
 }
 
@@ -25,37 +27,31 @@
 }
 
 .guess-tile-down {
-  transform: rotateX(80deg) translateY(12px) scale(0.92);
-  opacity: 0.28;
+  transform: rotateX(78deg) translateY(14px) scale(0.91);
+  opacity: 0.32;
   filter: grayscale(100%);
 }
 
 .guess-tile-down:hover {
-  opacity: 0.55;
-  filter: grayscale(50%);
+  opacity: 0.6;
+  filter: grayscale(40%);
 }
 
-/* Tactile push button (authentic physical toy button feel) */
-.btn-toy {
-  transition: transform 0.06s ease, box-shadow 0.06s ease;
+/* 3D Toy Button Press Physics */
+.btn-board {
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
 }
-.btn-toy:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.25);
+.btn-board:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Clean minimal scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-::-webkit-scrollbar-thumb {
-  background: #334155;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+/* Text outline utility for retro toy box look */
+.text-stroke {
+  text-shadow:
+    -2px -2px 0 #000,
+     2px -2px 0 #000,
+    -2px  2px 0 #000,
+     2px  2px 0 #000,
+     0 3px 6px rgba(0,0,0,0.4);
 }

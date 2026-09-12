@@ -7,11 +7,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['"Baloo 2"', 'Fredoka', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Fredoka', '"Baloo 2"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        tray: {
+        board: {
           red: {
             DEFAULT: '#dc2626',
             dark: '#991b1b',
@@ -24,17 +24,22 @@ export default {
             rim: '#1d4ed8',
             light: '#3b82f6',
           },
-        },
-        frame: {
-          yellow: '#facc15',
-          'yellow-dark': '#ca8a04',
-          'yellow-rim': '#eab308',
+          yellow: {
+            DEFAULT: '#facc15',
+            dark: '#ca8a04',
+            rim: '#eab308',
+            light: '#fef08a',
+          },
         },
       },
       boxShadow: {
-        'tray': '0 8px 0 0 rgba(0,0,0,0.35), 0 12px 20px -4px rgba(0,0,0,0.5)',
-        'tile-up': '0 4px 0 0 rgba(0,0,0,0.25), 0 6px 10px rgba(0,0,0,0.15)',
-        'btn-tactile': '0 3px 0 0 rgba(0,0,0,0.3)',
+        'tray-3d': '0 10px 0 0 rgba(0,0,0,0.35), 0 16px 25px rgba(0,0,0,0.4)',
+        'tile-3d': '0 5px 0 0 #ca8a04, 0 8px 12px rgba(0,0,0,0.2)',
+        'tile-down': '0 1px 0 0 #a16207',
+        'btn-red': '0 4px 0 0 #991b1b',
+        'btn-blue': '0 4px 0 0 #1e40af',
+        'btn-green': '0 4px 0 0 #166534',
+        'btn-yellow': '0 4px 0 0 #a16207',
       },
     },
   },
