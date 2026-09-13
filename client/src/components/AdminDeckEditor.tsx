@@ -170,23 +170,28 @@ export const AdminDeckEditor: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-stone-100 p-3 sm:p-5">
+    <div className="min-h-screen bg-amber-50/40 text-slate-900 font-display p-3 sm:p-5 select-none">
       <div className="max-w-6xl mx-auto flex flex-col gap-4">
         {/* Top Bar */}
-        <header className="flex items-center justify-between bg-slate-900 border-2 border-slate-800 p-3.5 rounded-xl shadow-tray">
+        <header className="flex flex-wrap items-center justify-between gap-3 bg-white border-2 border-stone-200 p-4 rounded-2xl shadow-sm">
           <div className="flex items-center gap-3">
             <a
               href={window.location.pathname}
-              className="btn-toy px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded font-bold text-xs flex items-center gap-1.5"
+              className="btn-board px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl font-black text-xs flex items-center gap-1.5 border border-stone-300 transition"
             >
               <ArrowLeft className="w-4 h-4" /> Zum Spiel
             </a>
             <div>
-              <h1 className="text-lg font-display font-black text-white">
-                Admin: Deck-Editor & Foto-Upload
+              <h1 className="text-xl font-black uppercase tracking-tight">
+                <span className="text-red-600">Wer </span>
+                <span className="text-stone-400">ist </span>
+                <span className="text-blue-600">es?</span>
+                <span className="text-stone-500 font-bold text-sm ml-2 font-sans normal-case tracking-normal">
+                  — Deck-Editor
+                </span>
               </h1>
-              <p className="text-xs text-stone-400">
-                Nur über diese geheime URL erreichbar.
+              <p className="text-xs text-stone-500 font-bold font-sans">
+                Eigene Fotos, Porträts und Namen für 24 Spielkarten anpassen
               </p>
             </div>
           </div>
@@ -203,38 +208,38 @@ export const AdminDeckEditor: React.FC = () => {
             />
             <button
               onClick={() => jsonImportRef.current?.click()}
-              className="btn-toy px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded text-xs font-bold flex items-center gap-1"
+              className="btn-board px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-800 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 shadow-2xs transition"
             >
-              <FolderOpen className="w-3.5 h-3.5" /> Import
+              <FolderOpen className="w-3.5 h-3.5 text-amber-600" /> Import
             </button>
             <button
               onClick={handleExport}
-              className="btn-toy px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-stone-300 rounded text-xs font-bold flex items-center gap-1"
+              className="btn-board px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-800 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 shadow-2xs transition"
             >
-              <Download className="w-3.5 h-3.5" /> Export
+              <Download className="w-3.5 h-3.5 text-blue-600" /> Export
             </button>
             <button
               onClick={handleSave}
-              className="btn-toy px-4 py-1.5 bg-green-600 hover:bg-green-500 text-white rounded text-xs font-black uppercase tracking-wider flex items-center gap-1"
+              className="btn-board px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md transition"
             >
               {saveSuccess ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
-              {saveSuccess ? 'Gespeichert' : 'Speichern'}
+              {saveSuccess ? 'Gespeichert!' : 'Speichern'}
             </button>
           </div>
         </header>
 
         {/* Deck List & Active Deck Meta */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-slate-900 border-2 border-slate-800 p-3 rounded-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border-2 border-stone-200 p-3.5 rounded-2xl shadow-sm">
           {/* Deck Chooser Chips */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-1">
             {availableDecks.map((d) => (
               <button
                 key={d.id}
                 onClick={() => setActiveDeck(d)}
-                className={`px-3 py-1 rounded text-xs font-bold transition flex items-center gap-1.5 ${
+                className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border-2 ${
                   activeDeck.id === d.id
-                    ? 'bg-amber-400 text-slate-950 shadow'
-                    : 'bg-slate-800 text-stone-400 hover:text-white'
+                    ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-xs'
+                    : 'bg-stone-50 border-stone-200 text-stone-700 hover:border-stone-300'
                 }`}
               >
                 <span>{d.name}</span>
@@ -244,7 +249,7 @@ export const AdminDeckEditor: React.FC = () => {
                       e.stopPropagation();
                       handleDelete(d.id);
                     }}
-                    className="hover:text-red-600 ml-1"
+                    className="hover:text-red-600 ml-1 text-sm font-black"
                     title="Löschen"
                   >
                     ×
@@ -255,42 +260,51 @@ export const AdminDeckEditor: React.FC = () => {
 
             <button
               onClick={handleCreateNew}
-              className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded text-xs font-bold flex items-center gap-1"
+              className="btn-board px-3 py-1.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-black flex items-center gap-1 shadow-xs transition"
               title="Neues Deck anlegen"
             >
-              <Plus className="w-3 h-3" /> Neu
+              <Plus className="w-3.5 h-3.5" /> Neu
             </button>
           </div>
 
           {/* Deck Name Input */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-stone-400 font-bold">Deck-Name:</span>
+            <span className="text-xs text-stone-600 font-black uppercase tracking-wider">Deck-Name:</span>
             <input
               type="text"
               value={activeDeck.name}
               onChange={(e) => setActiveDeck({ ...activeDeck, name: e.target.value })}
-              className="px-3 py-1 bg-slate-950 border border-slate-700 rounded text-sm text-white font-bold focus:outline-none focus:border-amber-400"
+              className="px-3.5 py-1.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-sm text-slate-900 font-bold focus:outline-none focus:border-amber-500 transition"
             />
           </div>
         </div>
 
         {/* 24 Tiles Editor */}
-        <div className="bg-slate-900 border-4 border-slate-800 rounded-2xl p-3 sm:p-4 shadow-tray">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5">
+        <div className="bg-white border-2 border-stone-200 rounded-3xl p-4 sm:p-6 shadow-xl">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-stone-200">
+            <span className="text-xs font-black text-stone-600 uppercase tracking-wider">
+              24 Karten dieses Decks ({activeDeck.characters.length} Personen)
+            </span>
+            <span className="text-xs text-stone-500 font-bold font-sans">
+              Klicke auf ein Bild, um ein Foto hochzuladen
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
             {activeDeck.characters.map((char, index) => {
               const hasCustomImg = Boolean(char.image);
 
               return (
                 <div
                   key={char.id}
-                  className="bg-amber-400 border-2 border-amber-600 rounded-lg p-1.5 flex flex-col items-center gap-1 shadow-tile-up"
+                  className="bg-amber-400 border-2 border-amber-500 rounded-2xl p-2 flex flex-col items-center gap-2 shadow-sm hover:shadow-md transition group/tile"
                 >
                   {/* Avatar / Image Box */}
-                  <div className="relative w-full aspect-square rounded overflow-hidden border border-amber-500 bg-white group">
+                  <div className="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-amber-600/30 bg-white group shadow-inner">
                     <CharacterAvatar character={char} />
 
                     {/* Overlay Upload Button */}
-                    <label className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition p-1 text-center text-xs text-white">
+                    <label className="absolute inset-0 bg-slate-950/75 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition p-1 text-center text-xs text-white backdrop-blur-2xs">
                       <input
                         type="file"
                         accept="image/*"
@@ -299,9 +313,9 @@ export const AdminDeckEditor: React.FC = () => {
                           if (e.target.files?.[0]) handleFileUpload(index, e.target.files[0]);
                         }}
                       />
-                      <Upload className="w-4 h-4 mb-0.5 text-amber-400" />
-                      <span className="text-[9px] font-black uppercase">
-                        {hasCustomImg ? 'Ändern' : 'Foto'}
+                      <Upload className="w-5 h-5 mb-1 text-amber-400" />
+                      <span className="text-[10px] font-black uppercase tracking-wider">
+                        {hasCustomImg ? 'Ändern' : 'Foto hochladen'}
                       </span>
                     </label>
 
@@ -311,10 +325,10 @@ export const AdminDeckEditor: React.FC = () => {
                           e.stopPropagation();
                           handleRemoveImage(index);
                         }}
-                        className="absolute top-1 right-1 p-0.5 bg-red-700 text-white rounded hover:bg-red-600"
+                        className="absolute top-1.5 right-1.5 p-1 bg-red-600 hover:bg-red-500 text-white rounded-lg shadow-sm transition"
                         title="Foto löschen"
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     )}
                   </div>
@@ -325,7 +339,7 @@ export const AdminDeckEditor: React.FC = () => {
                     value={char.name}
                     onChange={(e) => handleNameChange(index, e.target.value)}
                     placeholder={`Person ${index + 1}`}
-                    className="w-full text-center px-1 py-0.5 bg-white border border-amber-500 rounded text-xs font-black text-slate-900 focus:outline-none"
+                    className="w-full text-center px-2 py-1.5 bg-white border-2 border-amber-500 rounded-xl text-xs font-black text-slate-900 focus:outline-none focus:border-stone-900 transition shadow-2xs"
                   />
                 </div>
               );
