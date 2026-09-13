@@ -12,6 +12,7 @@ import { GameHistory } from './components/GameHistory';
 import { AdminDeckEditor } from './components/AdminDeckEditor';
 import { Character } from '../../worker/types';
 import { getBackendBaseUrl } from './utils/api';
+import { makeRoomCode } from './utils/localGame';
 import {
   Volume2,
   VolumeX,
@@ -37,8 +38,31 @@ export function App() {
   const [playerName, setPlayerName] = useState<string>(() => {
     return localStorage.getItem('who_is_it_player_name') || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
   });
-  const [roomId, setRoomId] = useState<string | null>(null);
-  const [joinInputCode, setJoinInputCode] = useState<string>('');
+
+  const [joinMode, setJoinMode] = useState<'create' | 'join'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('room') || params.get('lobby')) ? 'join' : 'create';
+  });
+
+  const [joinInputCode, setJoinInputCode] = useState<string>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return (params.get('room') || params.get('lobby'))?.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4) || '';
+  });
+
+  const [roomId, setRoomId] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paramCode = (params.get('room') || params.get('lobby'))?.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+    if (!paramCode) return null;
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('who_is_it_room_session') || 'null');
+      if (saved?.roomId === paramCode) {
+        return paramCode;
+      }
+    } catch {
+      // ignore
+    }
+    return null;
+  });
 
   const [isQuestionOpen, setIsQuestionOpen] = useState(false);
   const [guessTargetChar, setGuessTargetChar] = useState<Character | null>(null);
@@ -65,14 +89,6 @@ export function App() {
   useEffect(() => {
     localStorage.setItem('who_is_it_player_name', playerName);
   }, [playerName]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const roomParam = params.get('room');
-    if (roomParam && !roomId) {
-      setRoomId(roomParam.toUpperCase());
-    }
-  }, [roomId]);
 
   const lastPhaseRef = useRef(state?.phase);
   const lastTurnPlayerRef = useRef(state?.currentTurnPlayerId);
@@ -126,42 +142,56 @@ export function App() {
   };
 
   const handleCreateRoom = async () => {
+    const name = playerName.trim() || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
+    setPlayerName(name);
+    localStorage.setItem('who_is_it_player_name', name);
     playSound('click');
+
+    let code = makeRoomCode();
     try {
       const baseUrl = getBackendBaseUrl();
       const res = await fetch(`${baseUrl}/api/room/create`);
       if (res.ok) {
         const data = await res.json() as { roomId: string };
-        setRoomId(data.roomId);
-        window.history.replaceState({}, '', `?room=${data.roomId}`);
-      } else {
-        const fallback = 'ROOM' + Math.floor(Math.random() * 90 + 10);
-        setRoomId(fallback);
+        if (data.roomId) {
+          code = data.roomId.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+        }
       }
-    } catch (e) {
-      const fallback = 'ROOM' + Math.floor(Math.random() * 90 + 10);
-      setRoomId(fallback);
+    } catch {
+      // Fallback to generated 4-char code
     }
+
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
+    setRoomId(code);
+    window.history.replaceState({}, '', `?room=${code}`);
   };
 
-  const handleJoinRoom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!joinInputCode.trim()) return;
+  const handleJoinRoom = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const code = joinInputCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+    if (code.length !== 4) return;
+
+    const name = playerName.trim() || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
+    setPlayerName(name);
+    localStorage.setItem('who_is_it_player_name', name);
     playSound('click');
-    const code = joinInputCode.trim().toUpperCase();
+
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
     setRoomId(code);
     window.history.replaceState({}, '', `?room=${code}`);
   };
 
   const handleLeaveRoom = () => {
     playSound('click');
+    sessionStorage.removeItem('who_is_it_room_session');
     setRoomId(null);
     window.history.replaceState({}, '', window.location.pathname);
   };
 
   const handleQuickPlay = () => {
     playSound('click');
-    const code = 'SOLO';
+    const code = makeRoomCode();
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
     setRoomId(code);
     window.history.replaceState({}, '', `?room=${code}`);
   };
@@ -171,68 +201,117 @@ export function App() {
   const opponent = state?.players.find((p) => p.id !== playerId);
   const mySlot = state?.mySlot || 1;
 
-  // 1. WELCOME SCREEN: Helle, freundliche Spieltisch-Optik in Rot & Blau
+  // 1. WELCOME SCREEN: Modernes, helles Design mit Tabs (wie Karten gegen alle)
   if (!roomId) {
+    const canSubmit =
+      playerName.trim().length > 0 &&
+      (joinMode === 'create' || joinInputCode.trim().length === 4);
+
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 bg-amber-50/40 font-display relative select-none">
         <div className="w-full max-w-sm bg-white border-2 border-stone-200 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
           <div className="mb-5">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-              <span className="text-red-600">Wer </span>
-              <span className="text-stone-400">ist </span>
-              <span className="text-blue-600">es?</span>
+              <span className="text-stone-900">Wer </span>
+              <span className="text-amber-500">ist </span>
+              <span className="text-stone-900">es?</span>
             </h1>
             <p className="text-xs font-bold text-stone-500 mt-1 font-sans">
-              Das klassische 1v1 Duell — Rot gegen Blau
+              Das klassische Personen-Ratespiel im Browser
             </p>
           </div>
 
-          <div className="text-left mb-3.5">
-            <label className="text-[11px] font-black text-stone-600 uppercase tracking-wider block mb-1">
-              Dein Spielername
-            </label>
-            <input
-              type="text"
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Spielername..."
-              className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none focus:border-red-500 transition"
-              maxLength={20}
-            />
+          {/* Mode Tabs: Erstellen / Beitreten */}
+          <div className="flex bg-stone-100 p-1 rounded-xl mb-4 border border-stone-200">
+            <button
+              type="button"
+              onClick={() => {
+                setJoinMode('create');
+                playSound('click');
+              }}
+              className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
+                joinMode === 'create'
+                  ? 'bg-white text-stone-900 shadow-xs'
+                  : 'text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              Raum erstellen
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setJoinMode('join');
+                playSound('click');
+              }}
+              className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
+                joinMode === 'join'
+                  ? 'bg-white text-stone-900 shadow-xs'
+                  : 'text-stone-500 hover:text-stone-900'
+              }`}
+            >
+              Raum beitreten
+            </button>
           </div>
 
-          {/* Red Create Room Button */}
-          <button
-            onClick={handleCreateRoom}
-            className="btn-board w-full py-3 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-md text-sm uppercase tracking-wider flex items-center justify-center gap-2 mb-3"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (joinMode === 'create') {
+                handleCreateRoom();
+              } else {
+                handleJoinRoom();
+              }
+            }}
+            className="flex flex-col gap-3"
           >
-            <Play className="w-4 h-4 fill-current" /> Neues Spiel erstellen (Rot)
-          </button>
+            <div className="text-left">
+              <label className="text-[11px] font-black text-stone-600 uppercase tracking-wider block mb-1">
+                Dein Spielername
+              </label>
+              <input
+                type="text"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="z. B. Alex"
+                className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none focus:border-amber-500 transition"
+                maxLength={20}
+              />
+            </div>
 
-          {/* Blue Join Form */}
-          <form onSubmit={handleJoinRoom} className="flex gap-2 mb-4">
-            <input
-              type="text"
-              value={joinInputCode}
-              onChange={(e) => setJoinInputCode(e.target.value.toUpperCase())}
-              placeholder="RAUM-CODE"
-              className="flex-1 px-3 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-sm focus:outline-none focus:border-blue-500"
-              maxLength={6}
-            />
+            {joinMode === 'join' && (
+              <div className="text-left">
+                <label className="text-[11px] font-black text-stone-600 uppercase tracking-wider block mb-1">
+                  4-stelliger Raum-Code
+                </label>
+                <input
+                  type="text"
+                  value={joinInputCode}
+                  onChange={(e) =>
+                    setJoinInputCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4))
+                  }
+                  placeholder="ABCD"
+                  className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-amber-500 transition font-mono"
+                  maxLength={4}
+                />
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={!joinInputCode.trim()}
-              className="btn-board px-4 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-black rounded-xl uppercase text-xs shadow-md flex items-center gap-1"
+              disabled={!canSubmit}
+              className="btn-board w-full py-3 bg-stone-900 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black rounded-xl shadow-md text-sm uppercase tracking-wider flex items-center justify-center gap-2 mt-1"
             >
-              Beitreten (Blau) <ArrowRight className="w-3.5 h-3.5" />
+              {joinMode === 'create' ? 'Raum erstellen' : 'Raum beitreten'}
+              <ArrowRight className="w-4 h-4" />
             </button>
           </form>
 
           {/* Quick Play Solo Button */}
-          <div className="pt-3 border-t border-stone-200">
+          <div className="pt-3 mt-3 border-t border-stone-200">
             <button
+              type="button"
               onClick={handleQuickPlay}
-              className="btn-board w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs"
+              className="btn-board w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs"
             >
               Sofort ausprobieren (Solo-Brett)
             </button>
@@ -248,7 +327,7 @@ export function App() {
       <div className="min-h-screen flex flex-col bg-amber-50/40 font-display">
         <header className="px-4 py-2.5 bg-white border-b-2 border-stone-200 flex items-center justify-between text-slate-900 shadow-xs">
           <span className="font-black text-base uppercase">
-            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
+            <span className="text-stone-900">Wer</span> <span className="text-amber-500">ist</span> <span className="text-stone-900">es?</span>
           </span>
 
           <div className="flex items-center gap-1">
@@ -289,7 +368,7 @@ export function App() {
       <header className="relative h-12 flex-shrink-0 px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between shadow-xs text-slate-900 z-30">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="font-black text-sm sm:text-base uppercase tracking-tight">
-            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
+            <span className="text-stone-900">Wer</span> <span className="text-amber-500">ist</span> <span className="text-stone-900">es?</span>
           </span>
           <span className="text-xs bg-stone-100 text-slate-800 font-black px-2 py-0.5 rounded-lg border border-stone-300">
             {roomId}
