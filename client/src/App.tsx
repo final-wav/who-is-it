@@ -212,12 +212,12 @@ export function App() {
         <div className="w-full max-w-sm bg-white border-2 border-stone-200 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
           <div className="mb-5">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-              <span className="text-stone-900">Wer </span>
-              <span className="text-amber-500">ist </span>
-              <span className="text-stone-900">es?</span>
+              <span className="text-red-600">Wer </span>
+              <span className="text-stone-400">ist </span>
+              <span className="text-blue-600">es?</span>
             </h1>
             <p className="text-xs font-bold text-stone-500 mt-1 font-sans">
-              Das klassische Personen-Ratespiel im Browser
+              Das klassische 1v1 Duell — Rot gegen Blau
             </p>
           </div>
 
@@ -231,7 +231,7 @@ export function App() {
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'create'
-                  ? 'bg-white text-stone-900 shadow-xs'
+                  ? 'bg-white text-red-600 shadow-xs'
                   : 'text-stone-500 hover:text-stone-900'
               }`}
             >
@@ -245,7 +245,7 @@ export function App() {
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'join'
-                  ? 'bg-white text-stone-900 shadow-xs'
+                  ? 'bg-white text-blue-600 shadow-xs'
                   : 'text-stone-500 hover:text-stone-900'
               }`}
             >
@@ -273,7 +273,9 @@ export function App() {
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
                 placeholder="z. B. Alex"
-                className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none focus:border-amber-500 transition"
+                className={`w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-bold text-sm focus:outline-none transition ${
+                  joinMode === 'create' ? 'focus:border-red-500' : 'focus:border-blue-500'
+                }`}
                 maxLength={20}
               />
             </div>
@@ -290,7 +292,7 @@ export function App() {
                     setJoinInputCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4))
                   }
                   placeholder="ABCD"
-                  className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-amber-500 transition font-mono"
+                  className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-blue-500 transition font-mono"
                   maxLength={4}
                 />
               </div>
@@ -299,7 +301,11 @@ export function App() {
             <button
               type="submit"
               disabled={!canSubmit}
-              className="btn-board w-full py-3 bg-stone-900 hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black rounded-xl shadow-md text-sm uppercase tracking-wider flex items-center justify-center gap-2 mt-1"
+              className={`btn-board w-full py-3 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black rounded-xl shadow-md text-sm uppercase tracking-wider flex items-center justify-center gap-2 mt-1 transition ${
+                joinMode === 'create'
+                  ? 'bg-red-600 hover:bg-red-500 shadow-red-500/20'
+                  : 'bg-blue-600 hover:bg-blue-500 shadow-blue-500/20'
+              }`}
             >
               {joinMode === 'create' ? 'Raum erstellen' : 'Raum beitreten'}
               <ArrowRight className="w-4 h-4" />
@@ -311,7 +317,7 @@ export function App() {
             <button
               type="button"
               onClick={handleQuickPlay}
-              className="btn-board w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs"
+              className="btn-board w-full py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-xs"
             >
               Sofort ausprobieren (Solo-Brett)
             </button>
@@ -327,7 +333,7 @@ export function App() {
       <div className="min-h-screen flex flex-col bg-amber-50/40 font-display">
         <header className="px-4 py-2.5 bg-white border-b-2 border-stone-200 flex items-center justify-between text-slate-900 shadow-xs">
           <span className="font-black text-base uppercase">
-            <span className="text-stone-900">Wer</span> <span className="text-amber-500">ist</span> <span className="text-stone-900">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
 
           <div className="flex items-center gap-1">
@@ -368,7 +374,7 @@ export function App() {
       <header className="relative h-12 flex-shrink-0 px-3 sm:px-5 bg-white/95 backdrop-blur-md border-b-2 border-stone-200 flex items-center justify-between shadow-xs text-slate-900 z-30">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="font-black text-sm sm:text-base uppercase tracking-tight">
-            <span className="text-stone-900">Wer</span> <span className="text-amber-500">ist</span> <span className="text-stone-900">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
           <span className="text-xs bg-stone-100 text-slate-800 font-black px-2 py-0.5 rounded-lg border border-stone-300">
             {roomId}

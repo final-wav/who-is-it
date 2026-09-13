@@ -68,19 +68,19 @@ export const Lobby: React.FC<LobbyProps> = ({
       {/* Header */}
       <div className="relative bg-white border-2 border-stone-200 rounded-3xl p-5 sm:p-6 text-center shadow-xl overflow-hidden">
         <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
-          <span className="text-stone-900">Wer </span>
-          <span className="text-amber-500">ist </span>
-          <span className="text-stone-900">es?</span>
+          <span className="text-red-600">Wer </span>
+          <span className="text-stone-400">ist </span>
+          <span className="text-blue-600">es?</span>
         </h1>
         <p className="text-xs font-bold text-stone-500 mt-1 font-sans">
-          Das klassische 1v1 Personen-Ratespiel
+          Das klassische 1v1 Duell — Rot gegen Blau
         </p>
 
         {/* Room Code Badge & Invite Link */}
         <div className="mt-4 flex items-center justify-between gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200 max-w-sm mx-auto shadow-inner">
           <div className="flex items-center gap-2">
             <span className="text-xs font-black text-stone-500 uppercase">Code:</span>
-            <span className="text-2xl font-black text-stone-900 tracking-widest font-mono">{roomId}</span>
+            <span className="text-2xl font-black text-amber-600 tracking-widest font-mono">{roomId}</span>
           </div>
           <button
             onClick={handleCopyLink}
@@ -92,44 +92,44 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Players List */}
+      {/* Players List: Rot vs Blau */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
-        {/* Slot 1: Host */}
-        <div className="bg-white border-2 border-stone-200 rounded-2xl p-4 text-slate-900 shadow-sm flex items-center justify-between">
+        {/* Slot 1: Rotes Brett (Host) */}
+        <div className="bg-gradient-to-br from-red-500 to-red-600 border-2 border-red-700 rounded-2xl p-4 text-white shadow-md flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider block text-stone-500 font-sans">
-              Spieler 1 (Host)
+            <span className="text-[11px] font-black uppercase tracking-wider block text-red-100 font-sans">
+              Rotes Brett (Host)
             </span>
             <span className="text-lg font-black truncate block max-w-[150px]">
               {p1?.name || playerName || 'Spieler 1'}
             </span>
           </div>
-          <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-black border border-emerald-300">
+          <span className="bg-black/20 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-black border border-white/20">
             Bereit
           </span>
         </div>
 
-        {/* Slot 2: Guest */}
+        {/* Slot 2: Blaues Brett (Mitspieler) */}
         <div
           className={`rounded-2xl p-4 transition flex items-center justify-between border-2 ${
             p2?.connected
-              ? 'bg-white border-stone-200 text-slate-900 shadow-sm'
-              : 'bg-stone-50 border-stone-200 text-stone-400 border-dashed'
+              ? 'bg-gradient-to-br from-blue-500 to-blue-600 border-blue-700 text-white shadow-md'
+              : 'bg-stone-100 border-stone-300 text-stone-500 border-dashed'
           }`}
         >
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider block text-stone-500 font-sans">
-              Spieler 2 (Mitspieler)
+            <span className="text-[11px] font-black uppercase tracking-wider block text-blue-800 font-sans">
+              Blaues Brett (Mitspieler)
             </span>
-            <span className="text-lg font-black truncate block max-w-[150px]">
+            <span className="text-lg font-black truncate block max-w-[150px] text-slate-900">
               {p2?.connected ? p2.name : 'Warten auf Mitspieler...'}
             </span>
           </div>
           <span
             className={`px-3 py-1 rounded-full text-xs font-black ${
               p2?.connected
-                ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                : 'bg-stone-200 text-stone-500 border border-stone-300'
+                ? 'bg-black/20 text-white border border-white/20'
+                : 'bg-white text-stone-500 border border-stone-200'
             }`}
           >
             {p2?.connected ? 'Bereit' : 'Offen'}
@@ -165,7 +165,7 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="flex flex-col gap-2">
         <button
           onClick={handleStart}
-          className="btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white shadow-lg"
+          className="btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 via-rose-600 to-blue-600 hover:from-red-500 hover:to-blue-500 text-white shadow-lg shadow-red-500/20"
         >
           <Swords className="w-5 h-5" />
           {bothConnected ? 'Duell starten' : 'Spiel starten (Sofort losspielen)'}
