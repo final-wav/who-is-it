@@ -171,21 +171,22 @@ export function send(msg: any) {
   ensureConnected();
   if (ws && ws.readyState === WebSocket.OPEN) {
     rawSend(msg);
+  } else if (p2pManager) {
+    p2pManager.send(msg);
   } else {
     // Queue send briefly while connecting
     const iv = setInterval(() => {
       if (ws && ws.readyState === WebSocket.OPEN) {
         rawSend(msg);
         clearInterval(iv);
+      } else if (p2pManager) {
+        p2pManager.send(msg);
+        clearInterval(iv);
       }
-    }, 80);
+    }, 40);
     setTimeout(() => {
       clearInterval(iv);
-      // If WS didn't connect, try P2P fallback
-      if (p2pManager) {
-        p2pManager.send(msg);
-      }
-    }, 1500);
+    }, 800);
   }
 }
 
@@ -301,12 +302,34 @@ export const actions = {
   },
 
   toggleCard: (characterId: string, eliminated: boolean) => {
+    if (store.state) {
+      const current = new Set(store.state.myEliminatedIds || []);
+      if (eliminated) {
+        current.add(characterId);
+      } else {
+        current.delete(characterId);
+      }
+      set({
+        state: {
+          ...store.state,
+          myEliminatedIds: Array.from(current),
+        },
+      });
+    }
+
     send({
       t: 'toggleCard',
       characterId,
       eliminated,
+      senderId: store.session?.playerId,
+      slot: store.session?.slot,
       type: 'TOGGLE_CARD',
-      payload: { characterId, eliminated },
+      payload: {
+        characterId,
+        eliminated,
+        senderId: store.session?.playerId,
+        slot: store.session?.slot,
+      },
     });
   },
 

@@ -288,7 +288,7 @@ export class Room {
 
     if (eliminated) {
       if (!player.eliminatedCardIds.includes(characterId)) {
-        player.eliminatedCardIds.push(characterId);
+        player.eliminatedCardIds = [...player.eliminatedCardIds, characterId];
       }
     } else {
       player.eliminatedCardIds = player.eliminatedCardIds.filter((id) => id !== characterId);
@@ -336,17 +336,16 @@ export class Room {
     const isP2 = this.player2?.id === targetPlayerId;
     const mySlot: 1 | 2 | null = isP1 ? 1 : isP2 ? 2 : null;
 
+    const player = isP1 ? this.player1 : isP2 ? this.player2 : null;
     let mySecretCharacter: Character | null = null;
     let myEliminatedIds: string[] = [];
 
-    if (mySlot === 1 && this.player1?.secretCharacterId) {
-      mySecretCharacter =
-        this.selectedDeck.characters.find((c) => c.id === this.player1?.secretCharacterId) || null;
-      myEliminatedIds = this.player1.eliminatedCardIds;
-    } else if (mySlot === 2 && this.player2?.secretCharacterId) {
-      mySecretCharacter =
-        this.selectedDeck.characters.find((c) => c.id === this.player2?.secretCharacterId) || null;
-      myEliminatedIds = this.player2.eliminatedCardIds;
+    if (player) {
+      if (player.secretCharacterId) {
+        mySecretCharacter =
+          this.selectedDeck.characters.find((c) => c.id === player.secretCharacterId) || null;
+      }
+      myEliminatedIds = [...player.eliminatedCardIds];
     }
 
     const playersSummary = [];

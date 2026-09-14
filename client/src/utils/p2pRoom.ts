@@ -516,12 +516,17 @@ export class P2PRoomManager {
 
       case 'TOGGLE_CARD': {
         const { characterId, eliminated } = msg.payload;
-        const targetPlayer = msg.payload && (msg as any).senderId === this.player2?.id ? this.player2 : this.player1;
+        const senderId = msg.payload?.senderId || msg.senderId;
+        const senderSlot = msg.payload?.slot || msg.slot;
+        const targetPlayer =
+          senderSlot === 2 || (this.player2 && senderId === this.player2.id)
+            ? this.player2
+            : this.player1;
 
         if (targetPlayer) {
           if (eliminated) {
             if (!targetPlayer.eliminatedCardIds.includes(characterId)) {
-              targetPlayer.eliminatedCardIds.push(characterId);
+              targetPlayer.eliminatedCardIds = [...targetPlayer.eliminatedCardIds, characterId];
             }
           } else {
             targetPlayer.eliminatedCardIds = targetPlayer.eliminatedCardIds.filter((id) => id !== characterId);
@@ -656,7 +661,7 @@ export class P2PRoomManager {
       myPlayerId: targetId,
       mySlot,
       mySecretCharacter: mySecret,
-      myEliminatedIds: player?.eliminatedCardIds || [],
+      myEliminatedIds: [...(player?.eliminatedCardIds || [])],
       history: this.history,
       settings: this.settings,
       currentQuestion: this.currentQuestion,

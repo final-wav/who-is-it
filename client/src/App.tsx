@@ -59,6 +59,8 @@ export function App() {
 
   const { muted, toggleMute, playSound } = useAudio();
 
+  const [localEliminatedIds, setLocalEliminatedIds] = useState<string[]>([]);
+
   useEffect(() => {
     ensureConnected();
   }, []);
@@ -66,6 +68,15 @@ export function App() {
   useEffect(() => {
     localStorage.setItem('who_is_it_player_name', playerName);
   }, [playerName]);
+
+  // Sync local eliminated cards with room state if available, or reset on new game
+  useEffect(() => {
+    if (state?.phase === 'LOBBY' || (state?.phase === 'QUESTION_TIME' && state?.turnNumber === 1 && state?.history?.length === 0)) {
+      setLocalEliminatedIds([]);
+    } else if (state?.myEliminatedIds && state.myEliminatedIds.length > 0 && localEliminatedIds.length === 0) {
+      setLocalEliminatedIds(state.myEliminatedIds);
+    }
+  }, [state?.phase, state?.turnNumber, state?.history?.length]);
 
   const playerId = session?.playerId || state?.myPlayerId || '';
   const lastPhaseRef = useRef(state?.phase);
@@ -113,10 +124,13 @@ export function App() {
   }, [state, playerId, playSound]);
 
   const handleToggleCard = (charId: string) => {
-    if (!state) return;
-    const isEliminated = state.myEliminatedIds.includes(charId);
-    actions.toggleCard(charId, !isEliminated);
     playSound('flip');
+    setLocalEliminatedIds((prev) => {
+      const isElim = prev.includes(charId);
+      const next = isElim ? prev.filter((id) => id !== charId) : [...prev, charId];
+      actions.toggleCard(charId, !isElim);
+      return next;
+    });
   };
 
   const handleCreateRoom = () => {
@@ -393,7 +407,7 @@ export function App() {
       <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto px-2 py-1 sm:py-1.5 flex flex-col items-center justify-center overflow-hidden">
         <Board
           characters={state.selectedDeck.characters}
-          eliminatedIds={state.myEliminatedIds}
+          eliminatedIds={localEliminatedIds}
           onToggleCard={handleToggleCard}
           onGuessCharacter={(char) => setGuessTargetChar(char)}
           isGuessMode={isGuessMode}
