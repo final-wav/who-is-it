@@ -186,7 +186,9 @@ export function App() {
           </button>
         </div>
 
-        <div className="w-full max-w-sm bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-2 border-stone-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
+        {/* Outer anchor container so vertical position of the header stays locked when tabs switch */}
+        <div className="w-full max-w-sm min-h-[510px] sm:min-h-[525px] flex flex-col justify-start my-auto relative z-10">
+          <div className="w-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-2 border-stone-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-xl text-center transition-all duration-200">
           <div className="mb-5">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
               <span className="text-red-600">Wer </span>
@@ -309,6 +311,7 @@ export function App() {
               Sofort ausprobieren (Solo-Brett)
             </button>
           </div>
+        </div>
         </div>
       </div>
     );
