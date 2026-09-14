@@ -77,27 +77,27 @@ export const Lobby: React.FC<LobbyProps> = ({
   return (
     <div className="w-full max-w-xl mx-auto flex flex-col gap-4 p-3 sm:p-5 font-display">
       {/* Header */}
-      <div className="relative bg-white border-2 border-stone-200 rounded-3xl p-5 sm:p-6 text-center shadow-xl overflow-hidden">
+      <div className="relative bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 rounded-3xl p-5 sm:p-6 text-center shadow-xl overflow-hidden">
         <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
           <span className="text-red-600">Wer </span>
           <span className="text-stone-400">ist </span>
           <span className="text-blue-600">es?</span>
         </h1>
-        <p className="text-xs font-bold text-stone-500 mt-1 font-sans">
+        <p className="text-xs font-bold text-stone-500 dark:text-slate-400 mt-1 font-sans">
           Das klassische 1v1 Duell — Rot gegen Blau
         </p>
 
         {/* Room Code Badge & Invite Link */}
-        <div className="mt-4 flex items-center justify-between gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200 max-w-sm mx-auto shadow-inner">
+        <div className="mt-4 flex items-center justify-between gap-3 bg-stone-50 dark:bg-slate-800/80 p-3 rounded-2xl border border-stone-200 dark:border-slate-700 max-w-sm mx-auto shadow-inner">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black text-stone-500 uppercase">Code:</span>
-            <span className="text-2xl font-black text-amber-600 tracking-widest font-mono">{roomId}</span>
+            <span className="text-xs font-black text-stone-500 dark:text-slate-400 uppercase">Code:</span>
+            <span className="text-2xl font-black text-amber-500 tracking-widest font-mono">{roomId}</span>
           </div>
           <button
             onClick={handleCopyLink}
-            className="btn-board px-3 py-1.5 bg-white hover:bg-stone-100 text-slate-900 text-xs font-black rounded-xl flex items-center gap-1.5 border border-stone-300 shadow-2xs transition"
+            className="btn-board px-3 py-1.5 bg-white dark:bg-slate-700 hover:bg-stone-100 dark:hover:bg-slate-600 text-slate-900 dark:text-white text-xs font-black rounded-xl flex items-center gap-1.5 border border-stone-300 dark:border-slate-600 shadow-2xs transition"
           >
-            {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-amber-600" />}
+            {copied ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-4 h-4 text-amber-500" />}
             {copied ? 'Kopiert!' : 'Link kopieren'}
           </button>
         </div>
@@ -129,20 +129,20 @@ export const Lobby: React.FC<LobbyProps> = ({
           className={`rounded-2xl p-4 transition flex items-center justify-between border-2 ${
             p2Ready
               ? 'bg-gradient-to-br from-blue-500 to-blue-600 border-blue-700 text-white shadow-md'
-              : 'bg-stone-100 border-stone-300 text-stone-500 border-dashed'
+              : 'bg-stone-100 dark:bg-slate-900/60 border-stone-300 dark:border-slate-800 text-stone-500 dark:text-slate-400 border-dashed'
           }`}
         >
           <div>
             <span
               className={`text-[11px] font-black uppercase tracking-wider block font-sans ${
-                p2Ready ? 'text-blue-100' : 'text-blue-800'
+                p2Ready ? 'text-blue-100' : 'text-blue-800 dark:text-blue-400'
               }`}
             >
               Blaues Brett (Mitspieler) {isMeGuest && '(Du)'}
             </span>
             <span
               className={`text-lg font-black truncate block max-w-[150px] ${
-                p2Ready ? 'text-white' : 'text-slate-900'
+                p2Ready ? 'text-white' : 'text-slate-900 dark:text-slate-300'
               }`}
             >
               {p2Name}
@@ -152,7 +152,7 @@ export const Lobby: React.FC<LobbyProps> = ({
             className={`px-3 py-1 rounded-full text-xs font-black ${
               p2Ready
                 ? 'bg-black/20 text-white border border-white/20'
-                : 'bg-white text-stone-500 border border-stone-200'
+                : 'bg-white dark:bg-slate-800 text-stone-500 dark:text-slate-400 border border-stone-200 dark:border-slate-700'
             }`}
           >
             {p2Ready ? 'Bereit' : 'Offen'}
@@ -161,8 +161,8 @@ export const Lobby: React.FC<LobbyProps> = ({
       </div>
 
       {/* Deck Selector */}
-      <div className="bg-white border-2 border-stone-200 rounded-2xl p-4 shadow-sm">
-        <span className="text-xs font-black text-stone-600 uppercase tracking-wider block mb-2 font-sans">
+      <div className="bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm">
+        <span className="text-xs font-black text-stone-600 dark:text-slate-400 uppercase tracking-wider block mb-2 font-sans">
           Kartenpaket wählen
         </span>
 
@@ -174,7 +174,7 @@ export const Lobby: React.FC<LobbyProps> = ({
               className={`btn-board p-3 rounded-xl border-2 text-center transition ${
                 selectedDeckId === deck.id
                   ? 'bg-amber-400 border-amber-500 text-slate-950 font-black shadow-md -translate-y-0.5'
-                  : 'bg-stone-50 border-stone-200 text-stone-700 hover:border-stone-300'
+                  : 'bg-stone-50 dark:bg-slate-800 border-stone-200 dark:border-slate-700 text-stone-700 dark:text-slate-200 hover:border-stone-300 dark:hover:border-slate-600'
               }`}
             >
               <User className="w-5 h-5 mx-auto mb-1 opacity-80" />
@@ -204,7 +204,7 @@ export const Lobby: React.FC<LobbyProps> = ({
         {onLeave && (
           <button
             onClick={onLeave}
-            className="btn-board w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl transition border border-stone-300 text-center"
+            className="btn-board w-full py-2 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-600 dark:text-slate-300 font-bold text-xs uppercase tracking-wider rounded-xl transition border border-stone-300 dark:border-slate-700 text-center"
           >
             Raum verlassen
           </button>

@@ -46,21 +46,21 @@ export const QuestionDialog: React.FC<QuestionDialogProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-100">
-      <div className="w-full max-w-lg bg-white border-4 border-amber-400 rounded-3xl p-5 shadow-2xl">
-        <div className="flex items-center justify-between pb-2 mb-3 border-b border-stone-200">
-          <span className="text-sm font-display font-black text-slate-900 uppercase tracking-wider">
+      <div className="w-full max-w-lg bg-white dark:bg-slate-900 border-4 border-amber-400 rounded-3xl p-5 shadow-2xl">
+        <div className="flex items-center justify-between pb-2 mb-3 border-b border-stone-200 dark:border-slate-800">
+          <span className="text-sm font-display font-black text-slate-900 dark:text-white uppercase tracking-wider">
             Frage an Gegner stellen
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowCustom(!showCustom)}
-              className="text-xs font-bold text-blue-600 hover:underline"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline"
             >
               {showCustom ? 'Vorgefertigte Fragen' : 'Eigene Frage tippen'}
             </button>
             <button
               onClick={onClose}
-              className="p-1 text-stone-500 hover:text-slate-900 rounded-lg hover:bg-stone-100"
+              className="p-1 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800"
             >
               <X className="w-4 h-4" />
             </button>
@@ -73,7 +73,7 @@ export const QuestionDialog: React.FC<QuestionDialogProps> = ({
               <button
                 key={idx}
                 onClick={() => handleQuickQuestion(q)}
-                className="btn-board text-left px-3.5 py-2.5 rounded-xl bg-stone-100 hover:bg-amber-400 hover:text-slate-950 text-xs sm:text-sm font-bold text-slate-800 border border-stone-200 transition shadow-2xs"
+                className="btn-board text-left px-3.5 py-2.5 rounded-xl bg-stone-100 dark:bg-slate-800 hover:bg-amber-400 hover:text-slate-950 dark:hover:bg-amber-400 dark:hover:text-slate-950 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 border border-stone-200 dark:border-slate-700 transition shadow-2xs"
               >
                 {q.text}
               </button>
@@ -86,7 +86,7 @@ export const QuestionDialog: React.FC<QuestionDialogProps> = ({
               value={customQuestion}
               onChange={(e) => setCustomQuestion(e.target.value)}
               placeholder="Ja/Nein-Frage eingeben..."
-              className="flex-1 px-3.5 py-2.5 bg-stone-50 border border-stone-300 rounded-xl text-xs sm:text-sm text-slate-900 font-bold focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3.5 py-2.5 bg-stone-50 dark:bg-slate-800 border border-stone-300 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white font-bold focus:outline-none focus:border-blue-500"
               autoFocus
             />
             <button

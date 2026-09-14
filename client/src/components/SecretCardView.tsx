@@ -13,7 +13,7 @@ export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter 
   if (!secretCharacter) return null;
 
   return (
-    <div className="flex items-center gap-3 bg-white border-2 border-amber-400/90 rounded-2xl p-1.5 sm:p-2 shadow-md">
+    <div className="flex items-center gap-3 bg-white dark:bg-slate-900 border-2 border-amber-400/90 rounded-2xl p-1.5 sm:p-2 shadow-md">
       {/* Yellow Plastic Holder Stand (Groß & Präsent) */}
       <div
         onClick={() => setIsRevealed(prev => !prev)}
@@ -32,20 +32,20 @@ export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter 
       </div>
 
       <div className="leading-tight pr-1">
-        <span className="text-[11px] font-black text-amber-700 uppercase tracking-wider block font-display">
+        <span className="text-[11px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider block font-display">
           Deine Geheimkarte
         </span>
-        <span className="text-base sm:text-lg font-display font-black text-slate-900 block truncate max-w-[130px]">
+        <span className="text-base sm:text-lg font-display font-black text-slate-900 dark:text-white block truncate max-w-[130px]">
           {isRevealed ? secretCharacter.name : '••••••••'}
         </span>
       </div>
 
       <button
         onClick={() => setIsRevealed(prev => !prev)}
-        className="btn-board p-1.5 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-xl border border-stone-200 transition"
+        className="btn-board p-1.5 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-600 dark:text-stone-300 rounded-xl border border-stone-200 dark:border-slate-700 transition"
         title={isRevealed ? 'Gegen Spicker verbergen' : 'Karte aufdecken'}
       >
-        {isRevealed ? <EyeOff className="w-4 h-4 text-stone-500" /> : <Eye className="w-4 h-4 text-amber-600" />}
+        {isRevealed ? <EyeOff className="w-4 h-4 text-stone-500 dark:text-stone-400" /> : <Eye className="w-4 h-4 text-amber-500" />}
       </button>
     </div>
   );

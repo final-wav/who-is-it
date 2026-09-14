@@ -7,6 +7,7 @@ import {
   saveCustomDeck,
   deleteCustomDeck,
 } from '../utils/decks';
+import { useTheme } from '../hooks/useTheme';
 import {
   Upload,
   Download,
@@ -17,6 +18,8 @@ import {
   Plus,
   ArrowLeft,
   Check,
+  Sun,
+  Moon,
 } from 'lucide-react';
 
 async function compressImageFile(file: File, maxSize: number = 220): Promise<string> {
@@ -61,6 +64,7 @@ async function compressImageFile(file: File, maxSize: number = 220): Promise<str
 }
 
 export const AdminDeckEditor: React.FC = () => {
+  const { isDark, toggleTheme } = useTheme();
   const [availableDecks, setAvailableDecks] = useState<Deck[]>(() => getAllAvailableDecks());
   const [activeDeck, setActiveDeck] = useState<Deck>(() => {
     const customs = getAllCustomDecks();
@@ -170,33 +174,40 @@ export const AdminDeckEditor: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50/40 text-slate-900 font-display p-3 sm:p-5 select-none">
+    <div className="min-h-screen bg-amber-50/40 dark:bg-slate-950 text-slate-900 dark:text-white font-display p-3 sm:p-5 select-none">
       <div className="max-w-6xl mx-auto flex flex-col gap-4">
         {/* Top Bar */}
-        <header className="flex flex-wrap items-center justify-between gap-3 bg-white border-2 border-stone-200 p-4 rounded-2xl shadow-sm">
+        <header className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
           <div className="flex items-center gap-3">
             <a
               href={window.location.pathname}
-              className="btn-board px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl font-black text-xs flex items-center gap-1.5 border border-stone-300 transition"
+              className="btn-board px-3 py-1.5 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-800 dark:text-slate-200 rounded-xl font-black text-xs flex items-center gap-1.5 border border-stone-300 dark:border-slate-700 transition"
             >
               <ArrowLeft className="w-4 h-4" /> Zum Spiel
             </a>
             <div>
               <h1 className="text-xl font-black uppercase tracking-tight">
                 <span className="text-red-600">Wer </span>
-                <span className="text-stone-400">ist </span>
+                <span className="text-stone-400 dark:text-slate-500">ist </span>
                 <span className="text-blue-600">es?</span>
-                <span className="text-stone-500 font-bold text-sm ml-2 font-sans normal-case tracking-normal">
+                <span className="text-stone-500 dark:text-slate-400 font-bold text-sm ml-2 font-sans normal-case tracking-normal">
                   — Deck-Editor
                 </span>
               </h1>
-              <p className="text-xs text-stone-500 font-bold font-sans">
+              <p className="text-xs text-stone-500 dark:text-slate-400 font-bold font-sans">
                 Eigene Fotos, Porträts und Namen für 24 Spielkarten anpassen
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="p-2 bg-white dark:bg-slate-800 border border-stone-200 dark:border-slate-700 text-stone-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl shadow-xs hover:bg-stone-100 dark:hover:bg-slate-700 transition"
+              title={isDark ? 'Heller Modus' : 'Dunkler Modus'}
+            >
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+            </button>
             <input
               type="file"
               ref={jsonImportRef}
@@ -208,15 +219,15 @@ export const AdminDeckEditor: React.FC = () => {
             />
             <button
               onClick={() => jsonImportRef.current?.click()}
-              className="btn-board px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-800 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 shadow-2xs transition"
+              className="btn-board px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-stone-100 dark:hover:bg-slate-700 text-stone-800 dark:text-slate-200 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 dark:border-slate-700 shadow-2xs transition"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-amber-600" /> Import
+              <FolderOpen className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Import
             </button>
             <button
               onClick={handleExport}
-              className="btn-board px-3 py-1.5 bg-white hover:bg-stone-100 text-stone-800 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 shadow-2xs transition"
+              className="btn-board px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-stone-100 dark:hover:bg-slate-700 text-stone-800 dark:text-slate-200 rounded-xl text-xs font-black flex items-center gap-1.5 border border-stone-300 dark:border-slate-700 shadow-2xs transition"
             >
-              <Download className="w-3.5 h-3.5 text-blue-600" /> Export
+              <Download className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" /> Export
             </button>
             <button
               onClick={handleSave}
@@ -229,7 +240,7 @@ export const AdminDeckEditor: React.FC = () => {
         </header>
 
         {/* Deck List & Active Deck Meta */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border-2 border-stone-200 p-3.5 rounded-2xl shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 p-3.5 rounded-2xl shadow-sm">
           {/* Deck Chooser Chips */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-1">
             {availableDecks.map((d) => (
@@ -239,7 +250,7 @@ export const AdminDeckEditor: React.FC = () => {
                 className={`btn-board px-3.5 py-1.5 rounded-xl text-xs font-black transition flex items-center gap-1.5 border-2 ${
                   activeDeck.id === d.id
                     ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-xs'
-                    : 'bg-stone-50 border-stone-200 text-stone-700 hover:border-stone-300'
+                    : 'bg-stone-50 dark:bg-slate-800 border-stone-200 dark:border-slate-700 text-stone-700 dark:text-slate-200 hover:border-stone-300 dark:hover:border-slate-600'
                 }`}
               >
                 <span>{d.name}</span>
@@ -269,23 +280,23 @@ export const AdminDeckEditor: React.FC = () => {
 
           {/* Deck Name Input */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-stone-600 font-black uppercase tracking-wider">Deck-Name:</span>
+            <span className="text-xs text-stone-600 dark:text-slate-400 font-black uppercase tracking-wider">Deck-Name:</span>
             <input
               type="text"
               value={activeDeck.name}
               onChange={(e) => setActiveDeck({ ...activeDeck, name: e.target.value })}
-              className="px-3.5 py-1.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-sm text-slate-900 font-bold focus:outline-none focus:border-amber-500 transition"
+              className="px-3.5 py-1.5 bg-stone-50 dark:bg-slate-800 border-2 border-stone-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-white font-bold focus:outline-none focus:border-amber-500 transition"
             />
           </div>
         </div>
 
         {/* 24 Tiles Editor */}
-        <div className="bg-white border-2 border-stone-200 rounded-3xl p-4 sm:p-6 shadow-xl">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-stone-200">
-            <span className="text-xs font-black text-stone-600 uppercase tracking-wider">
+        <div className="bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-xl">
+          <div className="flex items-center justify-between mb-4 pb-2 border-b border-stone-200 dark:border-slate-800">
+            <span className="text-xs font-black text-stone-600 dark:text-slate-400 uppercase tracking-wider">
               24 Karten dieses Decks ({activeDeck.characters.length} Personen)
             </span>
-            <span className="text-xs text-stone-500 font-bold font-sans">
+            <span className="text-xs text-stone-500 dark:text-slate-400 font-bold font-sans">
               Klicke auf ein Bild, um ein Foto hochzuladen
             </span>
           </div>
