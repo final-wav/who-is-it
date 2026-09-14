@@ -54,6 +54,15 @@ export const Lobby: React.FC<LobbyProps> = ({
   const p2 = roomState?.players.find((p) => p.slot === 2);
   const bothConnected = Boolean(p1?.connected && p2?.connected);
 
+  const isMeHost = roomState?.mySlot === 1;
+  const isMeGuest = roomState?.mySlot === 2;
+
+  const p1Name = p1?.connected ? p1.name : (isMeHost ? playerName : 'Warten auf Host...');
+  const p1Ready = Boolean(p1?.connected || isMeHost);
+
+  const p2Name = p2?.connected ? p2.name : (isMeGuest ? playerName : 'Warten auf Mitspieler...');
+  const p2Ready = Boolean(p2?.connected || isMeGuest);
+
   const handleStart = () => {
     const chosen = availableDecks.find((d) => d.id === selectedDeckId);
     if (chosen?.isCustom) {
@@ -98,41 +107,53 @@ export const Lobby: React.FC<LobbyProps> = ({
         <div className="bg-gradient-to-br from-red-500 to-red-600 border-2 border-red-700 rounded-2xl p-4 text-white shadow-md flex items-center justify-between">
           <div>
             <span className="text-[11px] font-black uppercase tracking-wider block text-red-100 font-sans">
-              Rotes Brett (Host)
+              Rotes Brett (Host) {isMeHost && '(Du)'}
             </span>
             <span className="text-lg font-black truncate block max-w-[150px]">
-              {p1?.name || playerName || 'Spieler 1'}
+              {p1Name}
             </span>
           </div>
-          <span className="bg-black/20 backdrop-blur-xs px-3 py-1 rounded-full text-xs font-black border border-white/20">
-            Bereit
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-black border ${
+              p1Ready ? 'bg-black/20 text-white border-white/20' : 'bg-black/10 text-red-200 border-red-400/30'
+            }`}
+          >
+            {p1Ready ? 'Bereit' : 'Warten'}
           </span>
         </div>
 
         {/* Slot 2: Blaues Brett (Mitspieler) */}
         <div
           className={`rounded-2xl p-4 transition flex items-center justify-between border-2 ${
-            p2?.connected
+            p2Ready
               ? 'bg-gradient-to-br from-blue-500 to-blue-600 border-blue-700 text-white shadow-md'
               : 'bg-stone-100 border-stone-300 text-stone-500 border-dashed'
           }`}
         >
           <div>
-            <span className="text-[11px] font-black uppercase tracking-wider block text-blue-800 font-sans">
-              Blaues Brett (Mitspieler)
+            <span
+              className={`text-[11px] font-black uppercase tracking-wider block font-sans ${
+                p2Ready ? 'text-blue-100' : 'text-blue-800'
+              }`}
+            >
+              Blaues Brett (Mitspieler) {isMeGuest && '(Du)'}
             </span>
-            <span className="text-lg font-black truncate block max-w-[150px] text-slate-900">
-              {p2?.connected ? p2.name : 'Warten auf Mitspieler...'}
+            <span
+              className={`text-lg font-black truncate block max-w-[150px] ${
+                p2Ready ? 'text-white' : 'text-slate-900'
+              }`}
+            >
+              {p2Name}
             </span>
           </div>
           <span
             className={`px-3 py-1 rounded-full text-xs font-black ${
-              p2?.connected
+              p2Ready
                 ? 'bg-black/20 text-white border border-white/20'
                 : 'bg-white text-stone-500 border border-stone-200'
             }`}
           >
-            {p2?.connected ? 'Bereit' : 'Offen'}
+            {p2Ready ? 'Bereit' : 'Offen'}
           </span>
         </div>
       </div>
@@ -165,10 +186,15 @@ export const Lobby: React.FC<LobbyProps> = ({
       <div className="flex flex-col gap-2">
         <button
           onClick={handleStart}
-          className="btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 via-rose-600 to-blue-600 hover:from-red-500 hover:to-blue-500 text-white shadow-lg shadow-red-500/20"
+          disabled={isMeGuest}
+          className="btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 via-rose-600 to-blue-600 hover:from-red-500 hover:to-blue-500 text-white shadow-lg shadow-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Swords className="w-5 h-5" />
-          {bothConnected ? 'Duell starten' : 'Spiel starten (Sofort losspielen)'}
+          {bothConnected
+            ? (isMeGuest ? 'Bereit! Warten auf Host zum Starten...' : 'Duell starten')
+            : isMeGuest
+            ? 'Warten auf Host...'
+            : 'Spiel starten (Sofort losspielen)'}
         </button>
       </div>
     </div>

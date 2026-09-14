@@ -9,10 +9,12 @@ import {
 
 import { getBackendWsUrl } from '../utils/api';
 import { createLocalFallbackState } from '../utils/localGame';
+import { P2PRoomManager } from '../utils/p2pRoom';
 
 interface UseGameSocketProps {
   roomId: string | null;
   playerName: string;
+  isHost?: boolean;
 }
 
 function getOrCreateCredentials() {
@@ -27,25 +29,30 @@ function getOrCreateCredentials() {
   return { playerId, token };
 }
 
-export function useGameSocket({ roomId, playerName }: UseGameSocketProps) {
+export function useGameSocket({ roomId, playerName, isHost = true }: UseGameSocketProps) {
   const { playerId, token } = getOrCreateCredentials();
 
-  // Initialize with fallback state as soon as roomId exists to prevent any black/empty screens
+  // Initialize with fallback state matching the player's slot (Slot 1 = Host/Rot, Slot 2 = Guest/Blau)
   const [state, setState] = useState<SanitizedRoomState | null>(() => {
     if (!roomId) return null;
-    return createLocalFallbackState(roomId, playerId, playerName);
+    const initialPhase = roomId === 'SOLO' ? 'QUESTION_TIME' : 'LOBBY';
+    return createLocalFallbackState(roomId, playerId, playerName, initialPhase, isHost ? 1 : 2);
   });
 
   const [connected, setConnected] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const socketRef = useRef<WebSocket | null>(null);
+  const p2pManagerRef = useRef<P2PRoomManager | null>(null);
   const pingIntervalRef = useRef<number | null>(null);
   const reconnectTimeoutRef = useRef<number | null>(null);
 
   const send = useCallback((msg: ClientMessage) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
       socketRef.current.send(JSON.stringify(msg));
+    }
+    if (p2pManagerRef.current) {
+      p2pManagerRef.current.send(msg);
     }
   }, []);
 
@@ -119,9 +126,47 @@ export function useGameSocket({ roomId, playerName }: UseGameSocketProps) {
 
   useEffect(() => {
     if (roomId) {
-      setState((prev) => prev || createLocalFallbackState(roomId, playerId, playerName));
+      const initialPhase = roomId === 'SOLO' ? 'QUESTION_TIME' : 'LOBBY';
+      setState((prev) => prev || createLocalFallbackState(roomId, playerId, playerName, initialPhase, isHost ? 1 : 2));
+
+      // 1. Initialize P2P Room Manager (WebRTC + BroadcastChannel)
+      const p2p = new P2PRoomManager({
+        roomId,
+        playerId,
+        playerName,
+        isHost: Boolean(isHost),
+        token,
+        onStateChange: (newState) => {
+          setState(newState);
+          setConnected(true);
+        },
+        onError: (errMsg) => {
+          setError(errMsg);
+        },
+        onConnected: (isConnected) => {
+          setConnected(isConnected);
+        },
+      });
+      p2pManagerRef.current = p2p;
+
+      // 2. Also try WebSocket in case a backend is active
       connect();
+
+      return () => {
+        p2p.destroy();
+        p2pManagerRef.current = null;
+        if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
+        if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
+        if (socketRef.current) {
+          socketRef.current.close();
+          socketRef.current = null;
+        }
+      };
     } else {
+      if (p2pManagerRef.current) {
+        p2pManagerRef.current.destroy();
+        p2pManagerRef.current = null;
+      }
       if (socketRef.current) {
         socketRef.current.close();
         socketRef.current = null;
@@ -129,16 +174,7 @@ export function useGameSocket({ roomId, playerName }: UseGameSocketProps) {
       setState(null);
       setConnected(false);
     }
-
-    return () => {
-      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
-      if (reconnectTimeoutRef.current) clearTimeout(reconnectTimeoutRef.current);
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-    };
-  }, [roomId, connect, playerId, playerName]);
+  }, [roomId, connect, playerId, playerName, isHost, token]);
 
   // Action methods with local optimistic updates so game works offline/testing seamlessly
   const startGame = useCallback((deckId?: string, customDeck?: Deck) => {

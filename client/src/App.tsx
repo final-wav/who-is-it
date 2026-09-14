@@ -64,6 +64,15 @@ export function App() {
     return null;
   });
 
+  const [isHost, setIsHost] = useState<boolean>(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('who_is_it_room_session') || 'null');
+      return Boolean(saved?.isHost);
+    } catch {
+      return false;
+    }
+  });
+
   const [isQuestionOpen, setIsQuestionOpen] = useState(false);
   const [guessTargetChar, setGuessTargetChar] = useState<Character | null>(null);
   const [isGuessMode, setIsGuessMode] = useState(false);
@@ -84,7 +93,7 @@ export function App() {
     toggleCard,
     requestRematch,
     updateSettings,
-  } = useGameSocket({ roomId, playerName });
+  } = useGameSocket({ roomId, playerName, isHost });
 
   useEffect(() => {
     localStorage.setItem('who_is_it_player_name', playerName);
@@ -161,7 +170,8 @@ export function App() {
       // Fallback to generated 4-char code
     }
 
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: true }));
+    setIsHost(true);
     setRoomId(code);
     window.history.replaceState({}, '', `?room=${code}`);
   };
@@ -176,7 +186,8 @@ export function App() {
     localStorage.setItem('who_is_it_player_name', name);
     playSound('click');
 
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: false }));
+    setIsHost(false);
     setRoomId(code);
     window.history.replaceState({}, '', `?room=${code}`);
   };
@@ -184,6 +195,7 @@ export function App() {
   const handleLeaveRoom = () => {
     playSound('click');
     sessionStorage.removeItem('who_is_it_room_session');
+    setIsHost(false);
     setRoomId(null);
     window.history.replaceState({}, '', window.location.pathname);
   };
@@ -191,7 +203,8 @@ export function App() {
   const handleQuickPlay = () => {
     playSound('click');
     const code = makeRoomCode();
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code }));
+    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: true }));
+    setIsHost(true);
     setRoomId(code);
     window.history.replaceState({}, '', `?room=${code}`);
   };
