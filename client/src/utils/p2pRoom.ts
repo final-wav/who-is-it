@@ -343,14 +343,42 @@ export class P2PRoomManager {
   // ==========================================
   // HOST GAME LOGIC (Matches Cloudflare Worker)
   // ==========================================
-  private handleHostClientMessage(msg: ClientMessage) {
+  private handleHostClientMessage(rawMsg: any) {
+    const type =
+      rawMsg.type ||
+      (rawMsg.t === 'create' || rawMsg.t === 'join'
+        ? 'JOIN'
+        : rawMsg.t === 'start'
+        ? 'START_GAME'
+        : rawMsg.t === 'ask'
+        ? 'ASK_QUESTION'
+        : rawMsg.t === 'answer'
+        ? 'ANSWER_QUESTION'
+        : rawMsg.t === 'endElimination'
+        ? 'END_ELIMINATION'
+        : rawMsg.t === 'guess'
+        ? 'GUESS_CHARACTER'
+        : rawMsg.t === 'toggleCard'
+        ? 'TOGGLE_CARD'
+        : rawMsg.t === 'rematch'
+        ? 'REMATCH_REQUEST'
+        : rawMsg.t);
+
+    const msg = {
+      ...rawMsg,
+      type,
+      payload: rawMsg.payload || rawMsg,
+    };
+
     switch (msg.type) {
       case 'PING':
         this.sendToGuest({ type: 'PONG' });
         break;
 
       case 'JOIN': {
-        const { playerName, playerId, token } = msg.payload;
+        const playerName = msg.payload.playerName || msg.payload.name || 'Spieler';
+        const playerId = msg.payload.playerId || msg.playerId;
+        const token = msg.payload.token || msg.token;
 
         if (this.player1 && (this.player1.id === playerId || this.player1.token === token)) {
           this.player1.connected = true;

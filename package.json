@@ -6,10 +6,12 @@
   "type": "module",
   "scripts": {
     "dev:client": "vite",
+    "dev:server": "bun run --watch server/index.ts",
     "dev:worker": "wrangler dev",
     "dev": "wrangler dev",
     "build:client": "vite build",
     "build": "npm run build:client",
+    "start": "bun run server/index.ts",
     "deploy": "npm run build:client && wrangler deploy",
     "typecheck": "tsc --noEmit"
   },

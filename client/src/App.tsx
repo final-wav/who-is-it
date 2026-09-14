@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useGameSocket } from './hooks/useGameSocket';
+import { useGame, actions, ensureConnected } from './net';
 import { useAudio } from './hooks/useAudio';
 import { Board } from './components/Board';
 import { SecretCardView } from './components/SecretCardView';
@@ -11,18 +11,16 @@ import { GameOverModal } from './components/GameOverModal';
 import { GameHistory } from './components/GameHistory';
 import { AdminDeckEditor } from './components/AdminDeckEditor';
 import { Character } from '../../worker/types';
-import { getBackendBaseUrl } from './utils/api';
-import { makeRoomCode } from './utils/localGame';
 import {
   Volume2,
   VolumeX,
   HelpCircle,
   Target,
   LogOut,
-  Play,
   ArrowRight,
   History,
   X,
+  AlertCircle,
 } from 'lucide-react';
 
 export function App() {
@@ -35,42 +33,23 @@ export function App() {
     return <AdminDeckEditor />;
   }
 
+  const g = useGame();
+  const state = g.state;
+  const session = g.session;
+  const inGame = Boolean(session && state);
+
   const [playerName, setPlayerName] = useState<string>(() => {
     return localStorage.getItem('who_is_it_player_name') || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
   });
 
   const [joinMode, setJoinMode] = useState<'create' | 'join'>(() => {
     const params = new URLSearchParams(window.location.search);
-    return (params.get('room') || params.get('lobby')) ? 'join' : 'create';
+    return params.get('room') || params.get('lobby') ? 'join' : 'create';
   });
 
   const [joinInputCode, setJoinInputCode] = useState<string>(() => {
     const params = new URLSearchParams(window.location.search);
     return (params.get('room') || params.get('lobby'))?.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4) || '';
-  });
-
-  const [roomId, setRoomId] = useState<string | null>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const paramCode = (params.get('room') || params.get('lobby'))?.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
-    if (!paramCode) return null;
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('who_is_it_room_session') || 'null');
-      if (saved?.roomId === paramCode) {
-        return paramCode;
-      }
-    } catch {
-      // ignore
-    }
-    return null;
-  });
-
-  const [isHost, setIsHost] = useState<boolean>(() => {
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('who_is_it_room_session') || 'null');
-      return Boolean(saved?.isHost);
-    } catch {
-      return false;
-    }
   });
 
   const [isQuestionOpen, setIsQuestionOpen] = useState(false);
@@ -80,25 +59,15 @@ export function App() {
 
   const { muted, toggleMute, playSound } = useAudio();
 
-  const {
-    state,
-    connected,
-    error,
-    playerId,
-    startGame,
-    askQuestion,
-    answerQuestion,
-    endElimination,
-    guessCharacter,
-    toggleCard,
-    requestRematch,
-    updateSettings,
-  } = useGameSocket({ roomId, playerName, isHost });
+  useEffect(() => {
+    ensureConnected();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('who_is_it_player_name', playerName);
   }, [playerName]);
 
+  const playerId = session?.playerId || state?.myPlayerId || '';
   const lastPhaseRef = useRef(state?.phase);
   const lastTurnPlayerRef = useRef(state?.currentTurnPlayerId);
   const lastHistoryLenRef = useRef(state?.history?.length || 0);
@@ -146,34 +115,15 @@ export function App() {
   const handleToggleCard = (charId: string) => {
     if (!state) return;
     const isEliminated = state.myEliminatedIds.includes(charId);
-    toggleCard(charId, !isEliminated);
+    actions.toggleCard(charId, !isEliminated);
     playSound('flip');
   };
 
-  const handleCreateRoom = async () => {
+  const handleCreateRoom = () => {
     const name = playerName.trim() || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
     setPlayerName(name);
-    localStorage.setItem('who_is_it_player_name', name);
     playSound('click');
-
-    let code = makeRoomCode();
-    try {
-      const baseUrl = getBackendBaseUrl();
-      const res = await fetch(`${baseUrl}/api/room/create`);
-      if (res.ok) {
-        const data = await res.json() as { roomId: string };
-        if (data.roomId) {
-          code = data.roomId.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
-        }
-      }
-    } catch {
-      // Fallback to generated 4-char code
-    }
-
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: true }));
-    setIsHost(true);
-    setRoomId(code);
-    window.history.replaceState({}, '', `?room=${code}`);
+    actions.create(name);
   };
 
   const handleJoinRoom = (e?: React.FormEvent) => {
@@ -183,39 +133,23 @@ export function App() {
 
     const name = playerName.trim() || 'Spieler ' + Math.floor(Math.random() * 90 + 10);
     setPlayerName(name);
-    localStorage.setItem('who_is_it_player_name', name);
     playSound('click');
-
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: false }));
-    setIsHost(false);
-    setRoomId(code);
-    window.history.replaceState({}, '', `?room=${code}`);
+    actions.join(code, name);
   };
 
   const handleLeaveRoom = () => {
     playSound('click');
-    sessionStorage.removeItem('who_is_it_room_session');
-    setIsHost(false);
-    setRoomId(null);
-    window.history.replaceState({}, '', window.location.pathname);
+    actions.leave();
   };
 
   const handleQuickPlay = () => {
     playSound('click');
-    const code = makeRoomCode();
-    sessionStorage.setItem('who_is_it_room_session', JSON.stringify({ roomId: code, isHost: true }));
-    setIsHost(true);
-    setRoomId(code);
-    window.history.replaceState({}, '', `?room=${code}`);
+    const name = (playerName.trim() || 'Spieler') + ' (Solo)';
+    actions.create(name);
   };
 
-  const isMyTurn = state?.currentTurnPlayerId === playerId;
-  const isAnswerTimeForMe = state?.phase === 'ANSWER_TIME' && state?.currentQuestion?.askerPlayerId !== playerId;
-  const opponent = state?.players.find((p) => p.id !== playerId);
-  const mySlot = state?.mySlot || 1;
-
   // 1. WELCOME SCREEN: Modernes, helles Design mit Tabs (wie Karten gegen alle)
-  if (!roomId) {
+  if (!state || !session) {
     const canSubmit =
       playerName.trim().length > 0 &&
       (joinMode === 'create' || joinInputCode.trim().length === 4);
@@ -241,6 +175,7 @@ export function App() {
               onClick={() => {
                 setJoinMode('create');
                 playSound('click');
+                actions.clearError();
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'create'
@@ -255,6 +190,7 @@ export function App() {
               onClick={() => {
                 setJoinMode('join');
                 playSound('click');
+                actions.clearError();
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'join'
@@ -265,6 +201,13 @@ export function App() {
               Raum beitreten
             </button>
           </div>
+
+          {g.error && (
+            <div className="mb-3 p-2.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-bold flex items-center gap-2 text-left">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600" />
+              <span>{g.error}</span>
+            </div>
+          )}
 
           <form
             onSubmit={(e) => {
@@ -307,6 +250,7 @@ export function App() {
                   placeholder="ABCD"
                   className="w-full px-3.5 py-2.5 bg-stone-50 border-2 border-stone-200 rounded-xl text-slate-900 font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-blue-500 transition font-mono"
                   maxLength={4}
+                  autoFocus
                 />
               </div>
             )}
@@ -341,7 +285,7 @@ export function App() {
   }
 
   // 2. LOBBY VIEW
-  if (state?.phase === 'LOBBY') {
+  if (state.phase === 'LOBBY') {
     return (
       <div className="min-h-screen flex flex-col bg-amber-50/40 font-display">
         <header className="px-4 py-2.5 bg-white border-b-2 border-stone-200 flex items-center justify-between text-slate-900 shadow-xs">
@@ -370,10 +314,11 @@ export function App() {
         <main className="flex-1 flex items-center justify-center p-2">
           <Lobby
             roomState={state}
-            roomId={roomId}
+            roomId={session?.code || state.roomId}
             playerName={playerName}
             onPlayerNameChange={setPlayerName}
-            onStartGame={startGame}
+            onStartGame={actions.start}
+            onLeave={actions.leave}
           />
         </main>
       </div>
@@ -381,6 +326,11 @@ export function App() {
   }
 
   // 3. IN-GAME BOARD VIEW (100% viewport fit, KEIN SCROLLEN)
+  const isMyTurn = state.currentTurnPlayerId === playerId;
+  const isAnswerTimeForMe = state.phase === 'ANSWER_TIME' && state.currentQuestion?.askerPlayerId !== playerId;
+  const opponent = state.players.find((p) => p.id !== playerId);
+  const mySlot = state.mySlot || 1;
+
   return (
     <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-amber-50/40 text-slate-900 font-display select-none">
       {/* Game Header */}
@@ -390,12 +340,12 @@ export function App() {
             <span className="text-red-600">Wer</span> <span className="text-stone-400">ist</span> <span className="text-blue-600">es?</span>
           </span>
           <span className="text-xs bg-stone-100 text-slate-800 font-black px-2 py-0.5 rounded-lg border border-stone-300">
-            {roomId}
+            {session?.code || state.roomId}
           </span>
           <span className="text-xs text-stone-500 font-bold hidden sm:inline">
-            Runde {state?.turnNumber || 1}
+            Runde {state.turnNumber || 1}
           </span>
-          {state && state.history.length > 0 && (
+          {state.history.length > 0 && (
             <button
               onClick={() => setIsHistoryOpen((prev) => !prev)}
               className="btn-board px-2.5 py-0.5 bg-stone-100 hover:bg-stone-200 text-xs font-bold text-stone-700 rounded-lg flex items-center gap-1 border border-stone-300"
@@ -441,30 +391,28 @@ export function App() {
 
       {/* Main Board Area (100% restliche Höhe ohne Scrollen) */}
       <main className="flex-1 min-h-0 w-full max-w-5xl mx-auto px-2 py-1 sm:py-1.5 flex flex-col items-center justify-center overflow-hidden">
-        {state && (
-          <Board
-            characters={state.selectedDeck.characters}
-            eliminatedIds={state.myEliminatedIds}
-            onToggleCard={handleToggleCard}
-            onGuessCharacter={(char) => setGuessTargetChar(char)}
-            isGuessMode={isGuessMode}
-            phase={state.phase}
-            isMyTurn={isMyTurn}
-            onEndElimination={() => {
-              playSound('click');
-              endElimination();
-            }}
-            playerSlot={mySlot}
-          />
-        )}
+        <Board
+          characters={state.selectedDeck.characters}
+          eliminatedIds={state.myEliminatedIds}
+          onToggleCard={handleToggleCard}
+          onGuessCharacter={(char) => setGuessTargetChar(char)}
+          isGuessMode={isGuessMode}
+          phase={state.phase}
+          isMyTurn={isMyTurn}
+          onEndElimination={() => {
+            playSound('click');
+            actions.endElimination();
+          }}
+          playerSlot={mySlot}
+        />
       </main>
 
-      {/* Docked Action & Secret Card Bar at Bottom (Großzügig für Geheimkarte) */}
+      {/* Docked Action & Secret Card Bar at Bottom */}
       <footer className="relative h-18 sm:h-22 flex-shrink-0 bg-white/95 backdrop-blur-md border-t-2 border-stone-200 px-3 sm:px-6 flex items-center justify-between gap-3 shadow-md z-30">
-        <SecretCardView secretCharacter={state?.mySecretCharacter || null} />
+        <SecretCardView secretCharacter={state.mySecretCharacter || null} />
 
         {/* Turn Action Buttons exakt in der Mitte zentriert */}
-        {isMyTurn && state?.phase === 'QUESTION_TIME' ? (
+        {isMyTurn && state.phase === 'QUESTION_TIME' ? (
           <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 pointer-events-none">
             <div className="pointer-events-auto flex items-center gap-2">
               <button
@@ -505,13 +453,13 @@ export function App() {
             Gegner: {opponent?.name || 'Spieler 2'}
           </span>
           <span className="font-black text-amber-600 text-xs sm:text-sm">
-            {opponent?.cardCountEliminated || 0} / {state?.selectedDeck.characters.length || 24} umgeklappt
+            {opponent?.cardCountEliminated || 0} / {state.selectedDeck.characters.length || 24} umgeklappt
           </span>
         </div>
       </footer>
 
-      {/* History Modal Overlay (verdrängt das Spielbrett nicht) */}
-      {isHistoryOpen && state && (
+      {/* History Modal Overlay */}
+      {isHistoryOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-100">
           <div className="bg-white border-2 border-stone-200 rounded-3xl w-full max-w-md shadow-2xl p-4">
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-200">
@@ -529,60 +477,52 @@ export function App() {
       )}
 
       {/* Question Dialog Modal */}
-      {state && (
-        <QuestionDialog
-          isOpen={isQuestionOpen && isMyTurn && state.phase === 'QUESTION_TIME'}
-          onClose={() => setIsQuestionOpen(false)}
-          onAsk={(q, filter) => {
-            playSound('click');
-            askQuestion(q, filter);
-          }}
-          deck={state.selectedDeck}
-        />
-      )}
+      <QuestionDialog
+        isOpen={isQuestionOpen && isMyTurn && state.phase === 'QUESTION_TIME'}
+        onClose={() => setIsQuestionOpen(false)}
+        onAsk={(q, filter) => {
+          playSound('click');
+          actions.ask(q, filter);
+        }}
+        deck={state.selectedDeck}
+      />
 
       {/* Answer Modal */}
-      {state && (
-        <AnswerModal
-          isOpen={isAnswerTimeForMe}
-          questionText={state.currentQuestion?.text || ''}
-          askerName={state.currentQuestion?.askerName || 'Gegner'}
-          mySecretCharacter={state.mySecretCharacter}
-          onAnswer={(ans) => {
-            playSound('click');
-            answerQuestion(ans);
-          }}
-        />
-      )}
+      <AnswerModal
+        isOpen={isAnswerTimeForMe}
+        questionText={state.currentQuestion?.text || ''}
+        askerName={state.currentQuestion?.askerName || 'Gegner'}
+        mySecretCharacter={state.mySecretCharacter}
+        onAnswer={(ans) => {
+          playSound('click');
+          actions.answer(ans);
+        }}
+      />
 
       {/* Guess Modal */}
-      {state && (
-        <GuessModal
-          isOpen={Boolean(guessTargetChar)}
-          character={guessTargetChar}
-          settings={state.settings}
-          onClose={() => setGuessTargetChar(null)}
-          onConfirmGuess={(charId) => {
-            playSound('click');
-            guessCharacter(charId);
-            setGuessTargetChar(null);
-            setIsGuessMode(false);
-          }}
-        />
-      )}
+      <GuessModal
+        isOpen={Boolean(guessTargetChar)}
+        character={guessTargetChar}
+        settings={state.settings}
+        onClose={() => setGuessTargetChar(null)}
+        onConfirmGuess={(charId) => {
+          playSound('click');
+          actions.guess(charId);
+          setGuessTargetChar(null);
+          setIsGuessMode(false);
+        }}
+      />
 
       {/* Game Over Modal */}
-      {state && (
-        <GameOverModal
-          gameOverData={state.gameOverData}
-          myPlayerId={playerId}
-          onRematch={() => {
-            playSound('click');
-            requestRematch();
-          }}
-          onLeaveRoom={handleLeaveRoom}
-        />
-      )}
+      <GameOverModal
+        gameOverData={state.gameOverData}
+        myPlayerId={playerId}
+        onRematch={() => {
+          playSound('click');
+          actions.rematch();
+        }}
+        onLeaveRoom={handleLeaveRoom}
+      />
     </div>
   );
 }

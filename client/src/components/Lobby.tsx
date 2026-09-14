@@ -9,6 +9,7 @@ interface LobbyProps {
   playerName: string;
   onPlayerNameChange: (name: string) => void;
   onStartGame: (deckId?: string, customDeck?: Deck) => void;
+  onLeave?: () => void;
 }
 
 export const Lobby: React.FC<LobbyProps> = ({
@@ -16,6 +17,7 @@ export const Lobby: React.FC<LobbyProps> = ({
   roomId,
   playerName,
   onStartGame,
+  onLeave,
 }) => {
   const [copied, setCopied] = useState(false);
   const [availableDecks] = useState<Deck[]>(() => getAllAvailableDecks());
@@ -182,20 +184,31 @@ export const Lobby: React.FC<LobbyProps> = ({
         </div>
       </div>
 
-      {/* Start Button */}
+      {/* Start Button & Leave */}
       <div className="flex flex-col gap-2">
         <button
           onClick={handleStart}
-          disabled={isMeGuest}
+          disabled={isMeGuest || (!bothConnected && !isMeHost)}
           className="btn-board w-full py-3.5 rounded-2xl font-black text-base uppercase tracking-wider transition flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 via-rose-600 to-blue-600 hover:from-red-500 hover:to-blue-500 text-white shadow-lg shadow-red-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Swords className="w-5 h-5" />
           {bothConnected
-            ? (isMeGuest ? 'Bereit! Warten auf Host zum Starten...' : 'Duell starten')
+            ? isMeGuest
+              ? 'Bereit! Warten auf Host zum Starten...'
+              : 'Duell starten'
             : isMeGuest
             ? 'Warten auf Host...'
-            : 'Spiel starten (Sofort losspielen)'}
+            : 'Warten auf Mitspieler... (oder Solo starten)'}
         </button>
+
+        {onLeave && (
+          <button
+            onClick={onLeave}
+            className="btn-board w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-600 font-bold text-xs uppercase tracking-wider rounded-xl transition border border-stone-300 text-center"
+          >
+            Raum verlassen
+          </button>
+        )}
       </div>
     </div>
   );
