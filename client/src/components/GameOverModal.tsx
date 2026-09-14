@@ -50,7 +50,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-900 border-4 border-amber-400 w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-7 text-center relative">
+      <div className="bg-white dark:bg-zinc-900 border-4 border-amber-400 w-full max-w-lg rounded-3xl shadow-2xl p-6 sm:p-7 text-center relative">
         {/* Icon & Title */}
         <div className="mb-3">
           <div
@@ -67,7 +67,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
         <h2 className="text-3xl sm:text-4xl font-display font-black text-slate-900 dark:text-white tracking-tight mb-1">
           {isWinner ? 'Gewonnen!' : 'Leider verloren!'}
         </h2>
-        <p className="text-sm font-bold text-stone-600 dark:text-slate-300 mb-5 font-sans">
+        <p className="text-sm font-bold text-stone-600 dark:text-zinc-300 mb-5 font-sans">
           {isWinner
             ? 'Du hast die Identität deines Gegenübers erfolgreich erraten!'
             : gameOverData.reason === 'WRONG_GUESS'
@@ -76,15 +76,15 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
         </p>
 
         {/* Both Cards Revealed */}
-        <div className="bg-stone-50 dark:bg-slate-800/80 border border-stone-200 dark:border-slate-700 rounded-2xl p-3.5 mb-5">
-          <span className="text-xs font-black text-stone-500 dark:text-slate-400 uppercase tracking-wider block mb-2.5">
+        <div className="bg-stone-50 dark:bg-zinc-800/80 border border-stone-200 dark:border-zinc-700 rounded-2xl p-3.5 mb-5">
+          <span className="text-xs font-black text-stone-500 dark:text-zinc-400 uppercase tracking-wider block mb-2.5">
             Aufdeckung beider Geheimkarten
           </span>
           <div className="grid grid-cols-2 gap-3">
             {gameOverData.player1Secret && (
-              <div className="flex flex-col items-center p-2 rounded-xl bg-white dark:bg-slate-900 border border-red-200 dark:border-red-900/60 shadow-2xs">
+              <div className="flex flex-col items-center p-2 rounded-xl bg-white dark:bg-zinc-900 border border-red-200 dark:border-red-900/60 shadow-2xs">
                 <span className="text-xs font-black text-red-600 dark:text-red-400 mb-1">Spieler 1 (Rot)</span>
-                <div className="w-16 h-20 rounded-lg overflow-hidden border-2 border-amber-400 mb-1 bg-amber-50 dark:bg-slate-800">
+                <div className="w-16 h-20 rounded-lg overflow-hidden border-2 border-amber-400 mb-1 bg-amber-50 dark:bg-zinc-800">
                   <CharacterAvatar character={gameOverData.player1Secret} />
                 </div>
                 <span className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[110px]">
@@ -94,9 +94,9 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
             )}
 
             {gameOverData.player2Secret && (
-              <div className="flex flex-col items-center p-2 rounded-xl bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-900/60 shadow-2xs">
+              <div className="flex flex-col items-center p-2 rounded-xl bg-white dark:bg-zinc-900 border border-blue-200 dark:border-blue-900/60 shadow-2xs">
                 <span className="text-xs font-black text-blue-600 dark:text-blue-400 mb-1">Spieler 2 (Blau)</span>
-                <div className="w-16 h-20 rounded-lg overflow-hidden border-2 border-amber-400 mb-1 bg-amber-50 dark:bg-slate-800">
+                <div className="w-16 h-20 rounded-lg overflow-hidden border-2 border-amber-400 mb-1 bg-amber-50 dark:bg-zinc-800">
                   <CharacterAvatar character={gameOverData.player2Secret} />
                 </div>
                 <span className="text-xs font-black text-slate-900 dark:text-white truncate max-w-[110px]">
@@ -111,7 +111,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={onLeaveRoom}
-            className="btn-board flex-1 py-2.5 px-3 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-700 dark:text-slate-300 font-bold rounded-xl border border-stone-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5 text-xs uppercase"
+            className="btn-board flex-1 py-2.5 px-3 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-700 dark:text-zinc-300 font-bold rounded-xl border border-stone-300 dark:border-zinc-700 transition flex items-center justify-center gap-1.5 text-xs uppercase"
           >
             <Home className="w-4 h-4" /> Tisch verlassen
           </button>

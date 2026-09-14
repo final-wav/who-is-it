@@ -174,32 +174,32 @@ export function App() {
       (joinMode === 'create' || joinInputCode.trim().length === 4);
 
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 bg-amber-50/40 dark:bg-slate-950 font-display relative select-none">
+      <div className="min-h-screen flex flex-col items-center justify-center p-3 sm:p-4 bg-transparent font-display relative select-none">
         {/* Top-Right Theme Toggle */}
         <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20">
           <button
             onClick={toggleTheme}
-            className="p-2 bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-800 text-stone-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl shadow-xs hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+            className="p-2 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-stone-200 dark:border-zinc-800 text-stone-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white rounded-xl shadow-xs hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
             title={isDark ? 'Heller Modus' : 'Dunkler Modus'}
           >
-            {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-slate-700" />}
+            {isDark ? <Sun className="w-5 h-5 text-amber-400" /> : <Moon className="w-5 h-5 text-zinc-700" />}
           </button>
         </div>
 
-        <div className="w-full max-w-sm bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
+        <div className="w-full max-w-sm bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-2 border-stone-200 dark:border-zinc-800 rounded-3xl p-6 sm:p-7 shadow-xl text-center relative z-10">
           <div className="mb-5">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase">
               <span className="text-red-600">Wer </span>
-              <span className="text-stone-400 dark:text-slate-500">ist </span>
+              <span className="text-stone-400 dark:text-zinc-500">ist </span>
               <span className="text-blue-600">es?</span>
             </h1>
-            <p className="text-xs font-bold text-stone-500 dark:text-slate-400 mt-1 font-sans">
+            <p className="text-xs font-bold text-stone-500 dark:text-zinc-400 mt-1 font-sans">
               Das klassische 1v1 Duell — Rot gegen Blau
             </p>
           </div>
 
           {/* Mode Tabs: Erstellen / Beitreten */}
-          <div className="flex bg-stone-100 dark:bg-slate-800 p-1 rounded-xl mb-4 border border-stone-200 dark:border-slate-700">
+          <div className="flex bg-stone-100 dark:bg-zinc-800 p-1 rounded-xl mb-4 border border-stone-200 dark:border-zinc-700">
             <button
               type="button"
               onClick={() => {
@@ -209,8 +209,8 @@ export function App() {
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'create'
-                  ? 'bg-white dark:bg-slate-700 text-red-600 dark:text-red-400 shadow-xs'
-                  : 'text-stone-500 dark:text-slate-400 hover:text-stone-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-zinc-700 text-red-600 dark:text-red-400 shadow-xs'
+                  : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
               Raum erstellen
@@ -224,8 +224,8 @@ export function App() {
               }}
               className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition ${
                 joinMode === 'join'
-                  ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-xs'
-                  : 'text-stone-500 dark:text-slate-400 hover:text-stone-900 dark:hover:text-white'
+                  ? 'bg-white dark:bg-zinc-700 text-blue-600 dark:text-blue-400 shadow-xs'
+                  : 'text-stone-500 dark:text-zinc-400 hover:text-stone-900 dark:hover:text-white'
               }`}
             >
               Raum beitreten
@@ -251,7 +251,7 @@ export function App() {
             className="flex flex-col gap-3"
           >
             <div className="text-left">
-              <label className="text-[11px] font-black text-stone-600 dark:text-slate-300 uppercase tracking-wider block mb-1">
+              <label className="text-[11px] font-black text-stone-600 dark:text-zinc-300 uppercase tracking-wider block mb-1">
                 Dein Spielername
               </label>
               <input
@@ -259,7 +259,7 @@ export function App() {
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
                 placeholder="z. B. Alex"
-                className={`w-full px-3.5 py-2.5 bg-stone-50 dark:bg-slate-800 border-2 border-stone-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-bold text-sm focus:outline-none transition ${
+                className={`w-full px-3.5 py-2.5 bg-stone-50 dark:bg-zinc-800 border-2 border-stone-200 dark:border-zinc-700 rounded-xl text-slate-900 dark:text-white font-bold text-sm focus:outline-none transition ${
                   joinMode === 'create' ? 'focus:border-red-500' : 'focus:border-blue-500'
                 }`}
                 maxLength={20}
@@ -268,7 +268,7 @@ export function App() {
 
             {joinMode === 'join' && (
               <div className="text-left">
-                <label className="text-[11px] font-black text-stone-600 dark:text-slate-300 uppercase tracking-wider block mb-1">
+                <label className="text-[11px] font-black text-stone-600 dark:text-zinc-300 uppercase tracking-wider block mb-1">
                   4-stelliger Raum-Code
                 </label>
                 <input
@@ -278,7 +278,7 @@ export function App() {
                     setJoinInputCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4))
                   }
                   placeholder="ABCD"
-                  className="w-full px-3.5 py-2.5 bg-stone-50 dark:bg-slate-800 border-2 border-stone-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-blue-500 transition font-mono"
+                  className="w-full px-3.5 py-2.5 bg-stone-50 dark:bg-zinc-800 border-2 border-stone-200 dark:border-zinc-700 rounded-xl text-slate-900 dark:text-white font-black tracking-widest text-center uppercase text-base focus:outline-none focus:border-blue-500 transition font-mono"
                   maxLength={4}
                   autoFocus
                 />
@@ -300,7 +300,7 @@ export function App() {
           </form>
 
           {/* Quick Play Solo Button */}
-          <div className="pt-3 mt-3 border-t border-stone-200 dark:border-slate-800">
+          <div className="pt-3 mt-3 border-t border-stone-200 dark:border-zinc-800">
             <button
               type="button"
               onClick={handleQuickPlay}
@@ -317,30 +317,30 @@ export function App() {
   // 2. LOBBY VIEW
   if (state.phase === 'LOBBY') {
     return (
-      <div className="min-h-screen flex flex-col bg-amber-50/40 dark:bg-slate-950 font-display">
-        <header className="px-4 py-2.5 bg-white dark:bg-slate-900 border-b-2 border-stone-200 dark:border-slate-800 flex items-center justify-between text-slate-900 dark:text-white shadow-xs">
+      <div className="min-h-screen flex flex-col bg-transparent font-display">
+        <header className="px-4 py-2.5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b-2 border-stone-200 dark:border-zinc-800 flex items-center justify-between text-slate-900 dark:text-white shadow-xs">
           <span className="font-black text-base uppercase">
-            <span className="text-red-600">Wer</span> <span className="text-stone-400 dark:text-slate-500">ist</span> <span className="text-blue-600">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400 dark:text-zinc-500">ist</span> <span className="text-blue-600">es?</span>
           </span>
 
           <div className="flex items-center gap-1">
             <button
               onClick={toggleTheme}
-              className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+              className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
               title={isDark ? 'Heller Modus' : 'Dunkler Modus'}
             >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-400" />}
             </button>
             <button
               onClick={toggleMute}
-              className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+              className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
               title="Ton"
             >
               {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-600" />}
             </button>
             <button
               onClick={handleLeaveRoom}
-              className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-red-600 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+              className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-red-600 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
               title="Verlassen"
             >
               <LogOut className="w-4 h-4" />
@@ -369,23 +369,23 @@ export function App() {
   const mySlot = state.mySlot || 1;
 
   return (
-    <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-amber-50/40 dark:bg-slate-950 text-slate-900 dark:text-white font-display select-none">
+    <div className="h-screen max-h-screen w-screen overflow-hidden flex flex-col bg-transparent text-slate-900 dark:text-white font-display select-none">
       {/* Game Header */}
-      <header className="relative h-12 flex-shrink-0 px-3 sm:px-5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b-2 border-stone-200 dark:border-slate-800 flex items-center justify-between shadow-xs text-slate-900 dark:text-white z-30">
+      <header className="relative h-12 flex-shrink-0 px-3 sm:px-5 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b-2 border-stone-200 dark:border-zinc-800 flex items-center justify-between shadow-xs text-slate-900 dark:text-white z-30">
         <div className="flex items-center gap-2 sm:gap-3">
           <span className="font-black text-sm sm:text-base uppercase tracking-tight">
-            <span className="text-red-600">Wer</span> <span className="text-stone-400 dark:text-slate-500">ist</span> <span className="text-blue-600">es?</span>
+            <span className="text-red-600">Wer</span> <span className="text-stone-400 dark:text-zinc-500">ist</span> <span className="text-blue-600">es?</span>
           </span>
-          <span className="text-xs bg-stone-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-black px-2 py-0.5 rounded-lg border border-stone-300 dark:border-slate-700">
+          <span className="text-xs bg-stone-100 dark:bg-zinc-800 text-slate-800 dark:text-zinc-200 font-black px-2 py-0.5 rounded-lg border border-stone-300 dark:border-zinc-700">
             {session?.code || state.roomId}
           </span>
-          <span className="text-xs text-stone-500 dark:text-slate-400 font-bold hidden sm:inline">
+          <span className="text-xs text-stone-500 dark:text-zinc-400 font-bold hidden sm:inline">
             Runde {state.turnNumber || 1}
           </span>
           {state.history.length > 0 && (
             <button
               onClick={() => setIsHistoryOpen((prev) => !prev)}
-              className="btn-board px-2.5 py-0.5 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-xs font-bold text-stone-700 dark:text-slate-300 rounded-lg flex items-center gap-1 border border-stone-300 dark:border-slate-700"
+              className="btn-board px-2.5 py-0.5 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-xs font-bold text-stone-700 dark:text-zinc-300 rounded-lg flex items-center gap-1 border border-stone-300 dark:border-zinc-700"
             >
               <History className="w-3.5 h-3.5 text-blue-600" />
               <span className="hidden sm:inline">Verlauf</span> ({state.history.length})
@@ -401,7 +401,7 @@ export function App() {
                 Du bist am Zug
               </span>
             ) : (
-              <span className="px-3.5 py-1 bg-stone-100 dark:bg-slate-800 text-stone-600 dark:text-slate-400 font-bold text-xs rounded-xl border border-stone-300 dark:border-slate-700 whitespace-nowrap">
+              <span className="px-3.5 py-1 bg-stone-100 dark:bg-zinc-800 text-stone-600 dark:text-zinc-400 font-bold text-xs rounded-xl border border-stone-300 dark:border-zinc-700 whitespace-nowrap">
                 {opponent?.name || 'Gegner'} am Zug...
               </span>
             )}
@@ -411,21 +411,21 @@ export function App() {
         <div className="flex items-center gap-1">
           <button
             onClick={toggleTheme}
-            className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+            className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
             title={isDark ? 'Heller Modus' : 'Dunkler Modus'}
           >
-            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-400" />}
           </button>
           <button
             onClick={toggleMute}
-            className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+            className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
             title="Ton"
           >
             {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-600" />}
           </button>
           <button
             onClick={handleLeaveRoom}
-            className="p-1.5 text-stone-500 dark:text-slate-400 hover:text-red-600 rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+            className="p-1.5 text-stone-500 dark:text-zinc-400 hover:text-red-600 rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
             title="Verlassen"
           >
             <LogOut className="w-4 h-4" />
@@ -452,7 +452,7 @@ export function App() {
       </main>
 
       {/* Docked Action & Secret Card Bar at Bottom */}
-      <footer className="relative h-18 sm:h-22 flex-shrink-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t-2 border-stone-200 dark:border-slate-800 px-3 sm:px-6 flex items-center justify-between gap-3 shadow-md z-30">
+      <footer className="relative h-18 sm:h-22 flex-shrink-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t-2 border-stone-200 dark:border-zinc-800 px-3 sm:px-6 flex items-center justify-between gap-3 shadow-md z-30">
         <SecretCardView secretCharacter={state.mySecretCharacter || null} />
 
         {/* Turn Action Buttons exakt in der Mitte zentriert */}
@@ -479,7 +479,7 @@ export function App() {
                 className={`btn-board px-4 py-2 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide flex items-center gap-1.5 transition whitespace-nowrap ${
                   isGuessMode
                     ? 'bg-red-600 text-white ring-2 ring-red-400 shadow-md'
-                    : 'bg-stone-100 dark:bg-slate-800 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-900/60 hover:bg-red-50 dark:hover:bg-slate-700'
+                    : 'bg-stone-100 dark:bg-zinc-800 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-900/60 hover:bg-red-50 dark:hover:bg-zinc-700'
                 }`}
               >
                 <Target className="w-4 h-4" /> {isGuessMode ? 'Lösungs-Modus AN' : 'Wer ist es? (Lösen)'}
@@ -487,13 +487,13 @@ export function App() {
             </div>
           </div>
         ) : (
-          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hidden md:block text-xs font-bold text-stone-400 dark:text-slate-500">
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 hidden md:block text-xs font-bold text-stone-400 dark:text-zinc-500">
             {isMyTurn ? 'Karten umklappen oder Zug beenden' : 'Warte auf Mitspieler...'}
           </div>
         )}
 
         <div className="text-right text-xs leading-tight ml-auto">
-          <span className="text-stone-500 dark:text-slate-400 block text-[10px] uppercase font-bold">
+          <span className="text-stone-500 dark:text-zinc-400 block text-[10px] uppercase font-bold">
             Gegner: {opponent?.name || 'Spieler 2'}
           </span>
           <span className="font-black text-amber-600 dark:text-amber-400 text-xs sm:text-sm">
@@ -505,12 +505,12 @@ export function App() {
       {/* History Modal Overlay */}
       {isHistoryOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-100">
-          <div className="bg-white dark:bg-slate-900 border-2 border-stone-200 dark:border-slate-800 rounded-3xl w-full max-w-md shadow-2xl p-4">
-            <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-200 dark:border-slate-800">
+          <div className="bg-white dark:bg-zinc-900 border-2 border-stone-200 dark:border-zinc-800 rounded-3xl w-full max-w-md shadow-2xl p-4">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-stone-200 dark:border-zinc-800">
               <span className="font-black text-sm text-slate-900 dark:text-white uppercase">Spielverlauf</span>
               <button
                 onClick={() => setIsHistoryOpen(false)}
-                className="p-1 text-stone-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800"
+                className="p-1 text-stone-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800"
               >
                 <X className="w-4 h-4" />
               </button>

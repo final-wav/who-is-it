@@ -13,7 +13,7 @@ export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter 
   if (!secretCharacter) return null;
 
   return (
-    <div className="flex items-center gap-3 bg-white dark:bg-slate-900 border-2 border-amber-400/90 rounded-2xl p-1.5 sm:p-2 shadow-md">
+    <div className="flex items-center gap-3 bg-white dark:bg-zinc-900 border-2 border-amber-400/90 rounded-2xl p-1.5 sm:p-2 shadow-md">
       {/* Yellow Plastic Holder Stand (Groß & Präsent) */}
       <div
         onClick={() => setIsRevealed(prev => !prev)}
@@ -42,10 +42,10 @@ export const SecretCardView: React.FC<SecretCardViewProps> = ({ secretCharacter 
 
       <button
         onClick={() => setIsRevealed(prev => !prev)}
-        className="btn-board p-1.5 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-600 dark:text-stone-300 rounded-xl border border-stone-200 dark:border-slate-700 transition"
+        className="btn-board p-1.5 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-600 dark:text-stone-300 rounded-xl border border-stone-200 dark:border-zinc-700 transition"
         title={isRevealed ? 'Gegen Spicker verbergen' : 'Karte aufdecken'}
       >
-        {isRevealed ? <EyeOff className="w-4 h-4 text-stone-500 dark:text-stone-400" /> : <Eye className="w-4 h-4 text-amber-500" />}
+        {isRevealed ? <EyeOff className="w-4 h-4 text-stone-500 dark:text-zinc-400" /> : <Eye className="w-4 h-4 text-amber-500" />}
       </button>
     </div>
   );

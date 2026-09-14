@@ -22,14 +22,14 @@ export const GuessModal: React.FC<GuessModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white dark:bg-slate-900 border-4 border-amber-400 w-full max-w-md rounded-3xl shadow-2xl p-5 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-zinc-900 border-4 border-amber-400 w-full max-w-md rounded-3xl shadow-2xl p-5 sm:p-6 text-center animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between mb-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 rounded-xl text-xs font-black uppercase tracking-wider">
             <Target className="w-3.5 h-3.5" /> Wer ist es? Lösen
           </div>
           <button
             onClick={onClose}
-            className="p-1 text-stone-400 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-slate-800 transition"
+            className="p-1 text-stone-400 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-white rounded-lg hover:bg-stone-100 dark:hover:bg-zinc-800 transition"
           >
             <X className="w-4 h-4" />
           </button>
@@ -40,7 +40,7 @@ export const GuessModal: React.FC<GuessModalProps> = ({
         </h3>
 
         {/* Selected Portrait */}
-        <div className="w-24 h-28 mx-auto rounded-2xl overflow-hidden border-2 border-amber-400 bg-amber-50 dark:bg-slate-800 mb-3 shadow-md">
+        <div className="w-24 h-28 mx-auto rounded-2xl overflow-hidden border-2 border-amber-400 bg-amber-50 dark:bg-zinc-800 mb-3 shadow-md">
           <CharacterAvatar character={character} />
         </div>
 
@@ -64,7 +64,7 @@ export const GuessModal: React.FC<GuessModalProps> = ({
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={onClose}
-            className="btn-board py-2.5 px-3 bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-700 dark:text-slate-300 font-bold rounded-xl border border-stone-300 dark:border-slate-700 text-xs sm:text-sm uppercase tracking-wider"
+            className="btn-board py-2.5 px-3 bg-stone-100 dark:bg-zinc-800 hover:bg-stone-200 dark:hover:bg-zinc-700 text-stone-700 dark:text-zinc-300 font-bold rounded-xl border border-stone-300 dark:border-zinc-700 text-xs sm:text-sm uppercase tracking-wider"
           >
             Abbrechen
           </button>
